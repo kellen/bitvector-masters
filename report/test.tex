@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{mathtools}
+\usepackage{tikz}                   % draw pictures
+\usepackage{pgfplots}               % draw plots
+%\pgfplotsset{compat=1.7}
+\usepackage{pgfplotstable}          % fuck yeah! tables from tab-separated data
+\usetikzlibrary{calc,decorations.markings,positioning} % draw bus-width lines
+\usepackage[outline]{contour}
+\contourlength{0.5pt}
+%\tikzset{external/system call={pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
+%\tikzset{external/system call={lualatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
+%\usetikzlibrary{external}           % externalize the tikz pictures for faster compilation
+\begin{document}
+Cat dog \begingroup\medmuskip=0mu\relax$6 \times 4$\endgroup dog cat
+
+\pgfmathsetmacro{\figscale}{1}
+\begin{figure}
+    \centering
+    \input{bitpattern.tex}
+    \caption{The pattern of inputs in a S-box}
+    \label{fig:bitpattern}
+\end{figure}
+The goal of cryptography is to hide the contents of messages such that if a message between two parties is intercepted by a third, this third party will not easily be able to recover the message contents.
+\end{document}

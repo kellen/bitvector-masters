@@ -1,0 +1,7 @@
+*.pyc
+*.o
+build/
+tmp/
+gecode/
+TODO
+report/target/

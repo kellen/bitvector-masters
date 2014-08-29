@@ -1,0 +1,38 @@
+Unclear in MPG:
+
+How to define modification events for mulitple variables
+--
+
+The typing for the different branch function types is not clear if you're not using int; MPG says that:
+
+    In the following type definitions, the type IntVar of the argument x, the return type int
+    of the branch value function of type IntBranchVal, and the type int of the argument n is
+    dependent on our integer interval variables (they are of type IntVar and they take values of
+    type int).
+
+but what about the unsigned int a and int i? Even though it says that these are "as required" it would 
+be nice to know what they are and why.
+
+
+Later, is ValType the same as the internal value type for the variable? Seems like it should be, but 
+there's no text about this.
+
+Appears to be a typo in the int.hh file I got from gecode.org: "IntBracnhMerit" line 615 in my version (license comment removed)
+
+Way too much stuff going on in the V section all at once... 
+really difficult to build somehting incrementally. C++ is a horrible horrible language.
+Should have an example split out into separate files.
+
+should have modificaiton operations defined for multiple variables (not just an int limit gq/lq)
+
+
+
+how to implement the minimodel?
+
+
+
+the descriptions of value selection and commits are pretty cursory. WHY do these things exist? 
+What are they doing? From wehre are they called, etc?
+How do users change them when they're not int-based? etc
+
+

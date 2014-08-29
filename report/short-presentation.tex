@@ -1,0 +1,623 @@
+\documentclass[a4paper,landscape,10pt]{article}
+\usepackage[USenglish]{babel}
+\usepackage{color,colortbl}
+\usepackage{xcolor}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsthm}
+%\usepackage{fullpage}
+\usepackage{parskip}
+\usepackage{listings}
+% http://tex.stackexchange.com/questions/1375/what-is-a-good-package-for-displaying-algorithms/1376#1376
+%\usepackage{algorithmicx} % algorithms
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm} % algorithms
+%\usepackage{algorithmic}        % algoritms
+\usepackage{float}
+\usepackage{relsize}    % for relative font sizing, e.g. \smaller
+\usepackage{graphicx}
+\usepackage{pgfplots}               % draw plots
+%\pgfplotsset{compat=1.7}
+\usepackage{pgfplotstable}          % fuck yeah! tables from tab-separated data
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[margin=0in]{geometry}
+\usepackage{multicol}   % multiple columns if you want them
+\usepackage{lmodern}    % typeface
+%\usepackage{fancyhdr}
+\usepackage{emptypage}  % can force pages to be empty
+\usepackage{tikz}       % draw pictures
+\usetikzlibrary{calc,decorations.markings,positioning} % draw bus-width lines
+\usepackage{mathpazo}   % for the counter in the sudoku picture(?)
+\usepackage{capt-of}    % for putting a figure in the margin
+\usepackage{varwidth}   % for allowing variable-width contents of \set
+\usepackage{multirow}
+\usepackage{xfrac}
+\usepackage{ulem}
+
+\usepackage[T1]{fontenc} 
+\usepackage{fontspec}
+%\setmainfont{"Latin Modern Sans Serif"}
+%\setmainfont{"Bitstream Vera Sans"}
+\usepackage{csquotes}
+
+\usepackage{ifthen}     % conditional in sudoku pictures
+
+% for scaling up math
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{\ensuremath{#2}}}%
+
+% use this for small caps when there's no smallcaps in the provided package or no bold-smallcaps
+\renewcommand{\smaller}[1]{\relsize{-1}#1\relsize{+1}}
+\newcommand{\cst}[1]{\relsize{-2}#1\relsize{+2}}
+\renewcommand{\sc}[1]{\relsize{-2}{\uppercase{#1}}}
+\newcommand{\func}[1]{#1}
+% for empty node filling 
+\newcommand{\isempty}[3]{
+    \ifthenelse{\equal{#1}{}}{#2}{#3}
+}
+% correct sizing for curly braces
+%\newcommand{\set}[1]{\begin{Bmatrix}#1\end{Bmatrix}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+
+% for algorithms
+\newcommand*\Let[2]{\State #1 $\gets$ #2}
+
+% abs!
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+% Swap the definition of \abs* and \norm*, so that \abs
+% and \norm resizes the size of the brackets, and the 
+% starred version does not.
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+\newcommand{\tuple}[1]{\left\langle #1\right\rangle}
+%
+\let\oldnorm\norm
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+% remake text of FORALL
+\algrenewcommand{\algorithmicforall}{\textbf{for each}}
+\newcommand{\In}{~\textbf{in}~}
+\newcommand{\Constrain}[1]{\State{\textbf{constrain}~#1}}
+
+% trying to redefine the font used for math operators (names! e.g. max/linear)
+\DeclareSymbolFont{sfoperators}{OT1}{cmss}{m}{n}
+\DeclareSymbolFontAlphabet{\mathsf}{sfoperators}
+\makeatletter
+\def\operator@font{\mathgroup\symsfoperators}
+\makeatother
+
+
+\DeclareMathOperator{\parity}{parity}
+\DeclareMathOperator{\weight}{weight}
+\DeclareMathOperator{\alldifferent}{alldifferent}
+\DeclareMathOperator{\lin}{linear}
+\DeclareMathOperator{\score}{score}
+\DeclareMathOperator{\assigned}{assigned}
+\DeclareMathOperator{\disequal}{disequal}
+\DeclareMathOperator{\fixed}{fixed}
+\DeclareMathOperator{\free}{free}
+\DeclareMathOperator{\funccount}{count}
+\DeclareMathOperator{\funcsum}{sum}
+\DeclareMathOperator{\xor}{xor}
+\DeclareMathOperator{\xordist}{xordist}
+\DeclareMathOperator{\channel}{channel}
+\DeclareMathOperator{\nonlinear}{nonlinear}
+\DeclareMathOperator{\weights}{weights}
+\DeclareMathOperator{\propagate}{propagate}
+\DeclareMathOperator{\valid}{valid}
+\DeclareMathOperator{\store}{store}
+\DeclareMathOperator{\sol}{sol}
+\DeclareMathOperator{\var}{var}
+\DeclareMathOperator{\select}{select}
+\DeclareMathOperator{\dfe}{dfe}
+
+% color style for "highlights" in sudoku
+\usepackage[outline]{contour}
+\definecolor{light-gray}{gray}{0.95}
+\tikzset{sudokufill/.style={fill=light-gray}}
+\tikzset{line/.style={<-,ultra thick}}
+\tikzset{label/.style={scale=2.5,red,anchor=west,font=\bfseries}}
+\tikzset{sel/.style={yellow!40!white}}
+\tikzset{selcell/.style={orange!40!white}}
+\contourlength{1.5pt}
+
+\usepackage{xparse}
+\newcommand{\vc}[1]{\topskip0pt\vspace*{\fill}{#1}\vspace*{\fill}}
+\newcommand{\hone}[1]{\vc{\Huge{\textbf{#1}}}}
+\newcommand{\fuck}[2]{\vc{{\Huge\textbf{#1}} \vspace{10pt} {#2}}}
+\newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\left(#1\right)}}
+\newcommand{\FF}{\vphantom{gypRSTI$\left\{x12yO(1),\neq\ldots,12\right\}$}}
+
+\input{results.tex}
+    \pgfplotstableread{bitdecomphcactivity.tsv}{\bitdecomphcactivity}
+    \pgfplotstableread{bitdecomphcdegree.tsv}{\bitdecomphcdegree}
+    \pgfplotstableread{bitdecomphcnone.tsv}{\bitdecomphcnone}
+    \pgfplotstableread{bitdecomphcrnd.tsv}{\bitdecomphcrnd}
+
+    \pgfplotstableread{bithcactivity.tsv}{\bithcactivity}
+    \pgfplotstableread{bithcdegree.tsv}{\bithcdegree}
+    \pgfplotstableread{bithcnone.tsv}{\bithcnone}
+    \pgfplotstableread{bithcrnd.tsv}{\bithcrnd}
+
+    \pgfplotstableread{bithcssevenactivity.tsv}{\bithcssevenactivity}
+    \pgfplotstableread{bithcssevendegree.tsv}{\bithcssevendegree}
+    \pgfplotstableread{bithcssevennone.tsv}{\bithcssevennone}
+    \pgfplotstableread{bithcssevenrnd.tsv}{\bithcssevenrnd}
+
+    \pgfplotstableread{bitinthcactivity.tsv}{\bitinthcactivity}
+    \pgfplotstableread{bitinthcdegree.tsv}{\bitinthcdegree}
+    \pgfplotstableread{bitinthcnone.tsv}{\bitinthcnone}
+    \pgfplotstableread{bitinthcrnd.tsv}{\bitinthcrnd}
+
+    \pgfplotstableread{boolinthcactivity.tsv}{\boolinthcactivity}
+    \pgfplotstableread{boolinthcdegree.tsv}{\boolinthcdegree}
+    \pgfplotstableread{boolinthcnone.tsv}{\boolinthcnone}
+    \pgfplotstableread{boolinthcrnd.tsv}{\boolinthcrnd}
+
+    \pgfplotstableread{setinthcactivity.tsv}{\setinthcactivity}
+    \pgfplotstableread{setinthcdegree.tsv}{\setinthcdegree}
+    \pgfplotstableread{setinthcnone.tsv}{\setinthcnone}
+    \pgfplotstableread{setinthcrnd.tsv}{\setinthcrnd}
+
+\begin{document}
+\DeclareDocumentCommand\head{ m g g g g g g}{%
+    \vc{%
+        {\fontsize{36pt}{36pt}\selectfont\textbf{#1\FF}}%
+        \IfNoValueF{#2}{\\\vspace{20pt}{\Huge #2\FF}}%
+        \IfNoValueF{#3}{\\\vspace{20pt}{\Huge #3\FF}}%
+        \IfNoValueF{#4}{\\\vspace{20pt}{\Huge #4\FF}}%
+        \IfNoValueF{#5}{\\\vspace{20pt}{\Huge #5\FF}}%
+        \IfNoValueF{#6}{\\\vspace{20pt}{\Huge #6\FF}}%
+        \IfNoValueF{#7}{\\\vspace{20pt}{\Huge #7\FF}}%
+    }%
+}
+\centering
+\pagenumbering{gobble}
+\pgfmathsetmacro{\scale}{0.75}
+
+\fontfamily{lmss}\selectfont
+
+\head{Implementation of bit-vector variables in a \\ constraint solver with an application to the \\ generation of cryptographic S-boxes}{\vspace{20pt}\fontsize{36pt}{36pt}\selectfont\color{gray}Kellen Dye}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Prerequisites}{bit $\rightarrow$ "binary digit" $\rightarrow$ 0 or 1}{bit-vector $\rightarrow$ an array of bits, e.g. $1000110$}{bitwise operation $\rightarrow$ e.g. \sc{xor} ($\oplus$)}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Constraint programming}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Constraint programming}{Declarative $\rightarrow$ Describe the solution, not the process}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+
+\head{Constraint programming}{Expresses relationships between variables}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Constraint programming}{Relationships: e.g. $x \leq y$ or $x \neq y$}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\newcounter{row}
+\newcounter{col}
+
+\newcommand\setrow[9]{
+  \setcounter{col}{1}
+  \foreach \n in {#1, #2, #3, #4, #5, #6, #7, #8, #9} {
+    \edef\x{\value{col} - 0.5}
+    \edef\y{9.5 - \value{row}}
+    \node[anchor=center,scale=2.0] at (\x, \y) {\n};
+    \stepcounter{col}
+  }
+  \stepcounter{row}
+}
+
+\newsavebox{\sudoku}
+\sbox{\sudoku}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku}{Relationships between grid squares}{\usebox{\sudoku}}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokurow}
+\sbox{\sudokurow}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[sel] (0,1) rectangle ++(9,1);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku}{Row relationship: different values}{\usebox{\sudokurow}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokucol}
+\sbox{\sudokucol}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[sel] (1,0) rectangle ++(1,9);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku}{Column relationship: different values}{\usebox{\sudokucol}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokublock}
+\sbox{\sudokublock}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[sel] (0,0) rectangle ++(3,3);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku}{Block relationship: different values}{\usebox{\sudokublock}}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokuvar}
+\sbox{\sudokuvar}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[selcell] (1,1) rectangle ++(1,1);
+        \fill[selcell] (5,1) rectangle ++(1,1);
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \coordinate (V) at (4.2,5.2);
+        \node [scale=2.5,red,anchor=south west] at (V) {\contour{white}{variables}};
+        \path [bend left,line,red] (1.75,1.75) edge (V);
+        \path [bend left,line,red] (5.25,1.75) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku}{Relationships between \sout{grid squares} variables}{\usebox{\sudokuvar}}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Sudoku}{In constraints}{
+    \begin{varwidth}{\textwidth}
+        \begin{algorithmic}
+             \For{$i \In \{1..9\}$}
+                 \Constrain{$\alldifferent(row_i)$}
+                 \Constrain{$\alldifferent(column_i)$}
+                 \Constrain{$\alldifferent(block_i)$}
+             \EndFor
+        \end{algorithmic}
+    \end{varwidth}
+}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Constraint solvers}{Reason on variables}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Constraint solvers}{Reason on \sout{variables} variable domains}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Variable domains}{e.g. "the values in $\set{1,\ldots, 9}$"}\clearpage
+%\head{Variable domains}{potential values for this variable in a solution to the problem}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Propagators}{Enforce constraints on variable domains}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Propagators}{Identify impossible values and remove them: e.g. $\set{2,\ldots, 9}$}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Propagators}{Can cause other propagators to be executed}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Search}{When no more propagation can occur}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Search}{e.g. two search branches: $x < 5$ and $x \geq 5$}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Gecode (a constraint solver)}{Support for integers, Booleans, floats, sets}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Gecode (a constraint solver)}{\ldots\ but no bit-vectors}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Bit-vector variables}{Michel \& Van Hentenryck}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Bit-vector variables}{Potential $O(1)$ constraints!}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Bit-vector representation}{$\tuple{\mathit{lower}, \mathit{upper}}$}{Bits same in both lower and upper are assigned/fixed.}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Bit-vector variables}{Implemented in Gecode}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Bit-vector propagators}{Implemented some defined by Michel \& Van Hentenryck}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Bit-vector propagators}{New propagators for hamming weight, parity, disequality}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes}{\Large\input{s4.tex}}{$S_4(110000) = 1111$}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\newsavebox{\feistel}
+\pgfmathsetmacro{\figscale}{1}
+\sbox{\feistel}{\input{feistel.tex}}
+\head{Substitution boxes}{Feistel network}{\usebox{\feistel}}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\newsavebox{\desround}
+\pgfmathsetmacro{\figscale}{2}
+\sbox{\desround}{\input{desround.tex}}
+\head{Substitution boxes}{Feistel function F}{\usebox{\desround}}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Constraint programming + S-boxes}{Suggested by Ramamoorthy et al.}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{"Good" substitution boxes}{According to the DES design criteria}{Relationships between values in the S-box:}{ 
+    \begin{varwidth}{\textwidth}
+        \begin{itemize}
+            \item $x \neq y$
+            \item $\weight(S(x) \oplus S(y)) \geq 2$
+            \item $\alldifferent(row_i)$
+            \item $\score(S) \leq threshold$
+            \item \ldots
+        \end{itemize}
+    \end{varwidth}
+}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{S-box constraints}{Implemented global propagators for DES design criteria S-2 and S-7}\clearpage
+% -----------------------------------------------------------------------------------------------------
+% add to H_C
+% fix errors -> S-7
+
+\head{Symmetries}{Reduce the search space}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Symmetries}{Ramamoorthy et al. describe several (rotation, "bit inversion")}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Symmetries}{New symmetries: reflective over both $x$ and $y$ axes}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Comparison}{Compare models based on set and Boolean variables}{with several models based on bit-vectors}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Models}{Boolean, global integer-based S-2}{set, global integer-based S-2}{bit-vector, decomposed S-2 and S-7}{bit-vector, global integer-based S-2, decomposed S-7}{bit-vector, global bit-vector-based S-2, decomposed S-7}{bit-vector, global bit-vector-based S-2, global bit-vector based S-7}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Results}{Bit-vector models are generally more effective}{With global propagators $\rightarrow$ much more effective}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Future work}{Implement additional propagators, integrate into Gecode core}{Alternate requirements/constraints for S-boxes}\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Thanks!}\clearpage
+
+\head{Graphs!}\clearpage
+
+\pgfplotscreateplotcyclelist{kellencolors}{%
+	teal,every mark/.append style={solid,fill=teal!60!black},mark=*\\%
+	orange,every mark/.append style={solid,fill=orange!80!black},mark=square*\\%
+	yellow!60!black,every mark/.append style={solid,fill=yellow!80!black},mark=triangle*\\%
+	red!70!white,every mark/.append style={solid,fill=red!80!black},mark=diamond*\\%
+	lime!80!black,every mark/.append style={solid,fill=yellow!80!black},mark=pentagon*\\%
+    purple!60!black,every mark/.append style={solid,fill=red!80!black},mark=x\\%
+}
+
+\newsavebox{\rndbox}
+\sbox{\rndbox}{%
+            \begin{tikzpicture}[font=\sffamily]
+                \begin{axis}[xlabel={\# unassigned variables}, 
+                             xtick=data,
+                             ytick=data,
+                             ylabel={time (s)}, 
+                             %title={RND}, 
+                             width=0.6\textwidth, 
+                             cycle list name=kellencolors,
+                             legend style={legend pos=north west},
+                             legend cell align=left]
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \setinthcrnd ;
+                    \addlegendentry{set, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \boolinthcrnd ;
+                    \addlegendentry{boolean, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bitinthcrnd ;
+                    \addlegendentry{bit-vector, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bitdecomphcrnd ;
+                    \addlegendentry{bit-vector, decomposed S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bithcrnd ;
+                    \addlegendentry{bit-vector, S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bithcssevenrnd ;
+                    \addlegendentry{bit-vector, S-2, S-7};
+                \end{axis}
+            \end{tikzpicture}
+        }
+\head{RND}{\usebox{\rndbox}}\clearpage
+
+\newsavebox{\degreebox}
+\sbox{\degreebox}{%
+            \begin{tikzpicture}[font=\sffamily]
+                \begin{axis}[xlabel={\# unassigned variables}, 
+                             xtick=data,
+                             ytick=data,
+                             ylabel={time (s)}, 
+                             %title={DEGREE}, 
+                             width=0.6\textwidth, 
+                             cycle list name=kellencolors,
+                             legend style={legend pos=north west},
+                             legend cell align=left]
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \setinthcdegree ;
+                    \addlegendentry{set, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \boolinthcdegree ;
+                    \addlegendentry{boolean, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bitinthcdegree ;
+                    \addlegendentry{bit-vector, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bitdecomphcdegree ;
+                    \addlegendentry{bit-vector, decomposed S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bithcdegree ;
+                    \addlegendentry{bit-vector, S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bithcssevendegree ;
+                    \addlegendentry{bit-vector, S-2, S-7};
+                \end{axis}
+            \end{tikzpicture}
+        }
+\head{DEGREE}{\usebox{\degreebox}}\clearpage
+
+\newsavebox{\activitybox}
+\sbox{\activitybox}{%
+            \begin{tikzpicture}[font=\sffamily]
+                \begin{axis}[xlabel={\# unassigned variables}, 
+                             xtick=data,
+                             ytick=data,
+                             ylabel={time (s)}, 
+                             %title={ACTIVITY}, 
+                             width=0.6\textwidth, 
+                             cycle list name=kellencolors,
+                             legend style={legend pos=north west},
+                             legend cell align=left]
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \setinthcactivity ;
+                    \addlegendentry{set, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \boolinthcactivity ;
+                    \addlegendentry{boolean, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bitinthcactivity ;
+                    \addlegendentry{bit-vector, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bitdecomphcactivity ;
+                    \addlegendentry{bit-vector, decomposed S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bithcactivity ;
+                    \addlegendentry{bit-vector, S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bithcssevenactivity ;
+                    \addlegendentry{bit-vector, S-2, S-7};
+                \end{axis}
+            \end{tikzpicture}
+        }
+\head{ACTIVITY}{\usebox{\activitybox}}\clearpage
+
+\newsavebox{\nonebox}
+\sbox{\nonebox}{%
+            \begin{tikzpicture}[font=\sffamily]
+                \begin{axis}[xlabel={\# unassigned variables}, 
+                             xtick=data,
+                             ytick=data,
+                             ylabel={time (s)}, 
+                             %title={NONE}, 
+                             width=0.6\textwidth, 
+                             cycle list name=kellencolors,
+                             legend style={legend pos=north west},
+                             legend cell align=left]
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \setinthcnone ;
+                    \addlegendentry{set, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \boolinthcnone ;
+                    \addlegendentry{boolean, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bitinthcnone ;
+                    \addlegendentry{bit-vector, integer S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bitdecomphcnone ;
+                    \addlegendentry{bit-vector, decomposed S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bithcnone ;
+                    \addlegendentry{bit-vector, S-2};
+                    \addplot +[line width=1.5pt] table[y=averagetime] from \bithcssevennone ;
+                    \addlegendentry{bit-vector, S-2, S-7};
+                \end{axis}
+            \end{tikzpicture}
+        }
+\head{NONE}{\usebox{\nonebox}}\clearpage
+                   
+\end{document}

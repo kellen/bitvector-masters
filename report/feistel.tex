@@ -1,0 +1,188 @@
+\begin{tikzpicture}[thick,scale=\figscale, every node/.style={transform shape}, font=\sffamily]
+    \begin{scope}
+
+        % drawing from the bottom up
+        \pgfmathsetmacro{\h}{0}
+        \pgfmathsetmacro{\I}{3}
+        \pgfmathsetmacro{\O}{0.5}
+        \pgfmathsetmacro{\H}{1}
+        \pgfmathsetmacro{\Kscale}{1.5}
+        \pgfmathsetmacro{\Koffset}{0.25}
+        \pgfmathsetmacro{\Fscale}{2.0}
+        \pgfmathsetmacro{\IOscale}{1.5}
+        \pgfmathsetmacro{\R}{0.25}
+        \pgfmathsetmacro{\D}{{2*\R}}
+        \pgfmathsetmacro{\AR}{0.5}
+        % total width = 2xpadding + fbox + 2xarrows + 2xradius (in arrows, xor)
+        \pgfmathsetmacro{\W}{{1 + 1 + 1 + \R + \R}}
+        \pgfmathsetmacro{\M}{{\W/2}}
+
+        % output label
+        \node [anchor=center] at (\W / 2,0) {ciphertext};
+        \pgfmathsetmacro{\h}{\h + 0.25}
+
+        % output box
+        \draw (0,\h) rectangle ++(\W,\H);
+        % dividing line
+        \draw (\W / 2,\h) -- ++(0,\H);
+        % output labels
+        \node [anchor=center,scale=\IOscale] at (0.25 * \W,\h + 0.5) {$\text{R}_\text{n+1}$};
+        \node [anchor=center,scale=\IOscale] at (3 * 0.25 * \W,\h + 0.5) {$\text{L}_\text{n+1}$};
+        \pgfmathsetmacro{\h}{\h + \H}
+
+        % arrows down to ouput
+        \draw [<-] (\O,\h) -- ++(0,\H - \R);
+        \draw [<-,red] (\I,\h) -- ++(0,\H + 0.5 + \R);
+        \pgfmathsetmacro{\h}{\h + \H - \R}
+
+        % last xor
+        \draw (\O,\h + \R) circle [radius=\R];
+        \draw (\O,\h) -- ++(0,2*\R);
+        \draw (\O - \R, \h + \R) -- ++(2*\R,0);
+
+        % arrow from F-box
+        \draw [<-] (\O + \R, \h + \R) -- ++(\AR,0);
+        % arrow into the F-box
+        \draw [<-] (\I - \AR - \R, \h + \R) -- ++(\AR + \R,0);
+
+        % f box
+        \pgfmathsetmacro{\tmpy}{\h - \R}%(0.5 * \H)}
+        \draw (\O + \R + \AR,\tmpy) rectangle ++(\H,\H);
+        \pgfmathsetmacro{\tmpx}{\O + \R + \AR + (0.5 * \H)}
+        \pgfmathsetmacro{\tmpy}{\tmpy + (0.5 * \H)}
+        \node [anchor=center,scale=\Fscale] at (\tmpx,\tmpy) {F};
+
+        % arrow for the key
+        \pgfmathsetmacro{\ftop}{\tmpy + (0.5 * \H)}
+        \draw [<-] (\M,\ftop) -- ++(0,0.5);
+
+        % fbox and last xor on same horizontal
+        \pgfmathsetmacro{\h}{\h + \D}
+
+        % arrow into last xor
+        \draw [<-] (\O,\h) -- ++(0,0.5);
+        \pgfmathsetmacro{\h}{\h + 0.5}
+
+        % key
+        \node [anchor=center,scale=\Kscale] at (\M, \ftop + 0.5 + \Koffset) {$\text{K}_\text{n}$};
+
+        % dotted lines into the Nth step
+        \draw [densely dotted] (\O,\h) -- ++(0,0.5);
+        \draw [densely dotted,red] (\I,\h) -- ++(0,0.5);
+        \pgfmathsetmacro{\h}{\h + 0.5}
+        
+        % gap
+        \pgfmathsetmacro{\h}{\h + 0.5}
+
+        % dotted lines out of the 2nd step
+        \draw [densely dotted] (\O,\h) -- ++(0,0.5);
+        \draw [densely dotted,red] (\I,\h) -- ++(0,0.5);
+        \pgfmathsetmacro{\h}{\h + 0.5}
+
+        % connecting lines
+        \draw (\O,\h) -- ++(\I - \O,0.5);
+        \draw [red] (\I,\h) -- ++(\O - \I,0.5);
+        \pgfmathsetmacro{\h}{\h + 0.5}
+
+        %
+        % begin second block
+        %
+
+        % just lines, not arrows, colors reversed
+        \pgfmathsetmacro{\linesize}{0.5 + (\H / 2) - \R}
+        \draw [red] (\O,\h) -- ++(0,\linesize);
+        \draw (\I,\h) -- ++(0,2.5 + \R);
+        \pgfmathsetmacro{\h}{\h + \linesize}
+
+        % xor 1
+        \draw (\O,\h + \R) circle [radius=\R];
+        \draw (\O,\h) -- ++(0,2*\R);
+        \draw (\O - \R, \h + \R) -- ++(2*\R,0);
+
+        % arrow from F-box
+        \draw [<-] (\O + \R, \h + \R) -- ++(\AR,0);
+        % arrow into the F-box
+        \draw [<-] (\I - \AR - \R, \h + \R) -- ++(\AR + \R,0);
+
+        % f box
+        \pgfmathsetmacro{\tmpy}{\h - \R}%(0.5 * \H)}
+        \draw (\O + \R + \AR,\tmpy) rectangle ++(\H,\H);
+        \pgfmathsetmacro{\tmpx}{\O + \R + \AR + (0.5 * \H)}
+        \pgfmathsetmacro{\tmpy}{\tmpy + (0.5 * \H)}
+        \node [anchor=center,scale=\Fscale] at (\tmpx,\tmpy) {F};
+
+        % arrow for the key
+        \pgfmathsetmacro{\ftop}{\tmpy + (0.5 * \H)}
+        \draw [<-] (\M,\ftop) -- ++(0,0.5);
+
+        % fbox and last xor on same horizontal
+        \pgfmathsetmacro{\h}{\h + \D}
+
+        % arrow into last xor
+        \draw [<-,red] (\O,\h) -- ++(0,1.5);
+        \pgfmathsetmacro{\h}{\h + 1.5}
+
+        % key
+        \node [anchor=center,scale=\Kscale] at (\M, \ftop + 0.5 + \Koffset) {$\text{K}_\text{1}$};
+
+        % connecting lines
+        \draw [red] (\O,\h) -- ++(\I - \O,0.5);
+        \draw (\I,\h) -- ++(\O - \I,0.5);
+        \pgfmathsetmacro{\h}{\h + 0.5}
+
+        %
+        % begin third (top) block
+        %
+        \draw (\O,\h) -- ++(0,\linesize);
+        \draw [red] (\I,\h) -- ++(0,2.5 + \R);
+        \pgfmathsetmacro{\h}{\h + \linesize}
+        
+        % xor 0
+        \draw (\O,\h + \R) circle [radius=\R];
+        \draw (\O,\h) -- ++(0,2*\R);
+        \draw (\O - \R, \h + \R) -- ++(2*\R,0);
+
+        % arrow from F-box
+        \draw [<-] (\O + \R, \h + \R) -- ++(\AR,0);
+        % arrow into the F-box
+        \draw [<-] (\I - \AR - \R, \h + \R) -- ++(\AR + \R,0);
+
+        % f box
+        \pgfmathsetmacro{\tmpy}{\h - \R}%(0.5 * \H)}
+        \draw (\O + \R + \AR,\tmpy) rectangle ++(\H,\H);
+        \pgfmathsetmacro{\tmpx}{\O + \R + \AR + (0.5 * \H)}
+        \pgfmathsetmacro{\tmpy}{\tmpy + (0.5 * \H)}
+        \node [anchor=center,scale=\Fscale] at (\tmpx,\tmpy) {F};
+
+        % arrow for the key
+        \pgfmathsetmacro{\ftop}{\tmpy + (0.5 * \H)}
+        \draw [<-] (\M,\ftop) -- ++(0,0.5);
+
+        % fbox and last xor on same horizontal
+        \pgfmathsetmacro{\h}{\h + \D}
+
+        % arrow into last xor
+        \draw [<-] (\O,\h) -- ++(0,1.5);
+        \pgfmathsetmacro{\h}{\h + 1.5}
+
+        % key
+        \node [anchor=center,scale=\Kscale] at (\M, \ftop + 0.5 + \Koffset) {$\text{K}_\text{0}$};
+
+        % output box
+        \draw (0,\h) rectangle ++(\W,\H);
+        % dividing line
+        \draw (\W / 2,\h) -- ++(0,\H);
+        % output labels
+        \node [anchor=center,scale=\IOscale] at (0.25 * \W,\h + 0.5) {$\text{L}_\text{0}$};
+        \node [anchor=center,scale=\IOscale] at (3 * 0.25 * \W,\h + 0.5) {$\text{R}_\text{0}$};
+        \pgfmathsetmacro{\h}{\h + \H}
+
+        % padding
+        \pgfmathsetmacro{\h}{\h + 0.25}
+
+        % input label
+        \node [anchor=center] at (\W / 2,\h) {plaintext};
+        \pgfmathsetmacro{\h}{\h + 0.25}
+
+    \end{scope}
+\end{tikzpicture}

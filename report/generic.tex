@@ -1,0 +1,15 @@
+\begin{algorithm}
+    \caption{Generic propagator for $c(x,y)$}
+    \label{alg:generic}
+    \begin{algorithmic}
+        \Function{propagate}{$c(x,y)$}
+            \Let{$\low$}{$f^x_{\mathit{low\vphantom{p}}}(x,y)$}
+            \Let{$\low{y}$}{$f^x_{\mathit{up}}(x,y)$}
+            \Let{$\up$}{$f^y_{\mathit{low\vphantom{p}}}(x,y)$}
+            \Let{$\up{y}$}{$f^y_{\mathit{up}}(x,y)$}
+            \Let{$\bd$}{$\bitd$}
+            \Let{$\bd{y}$}{$\bitd{y}$}
+            \Return{$\valid(\bd) \land \valid(\bd{y})$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}

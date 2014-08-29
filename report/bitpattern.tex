@@ -1,0 +1,112 @@
+\begin{tikzpicture}[thick,scale=\figscale, every node/.style={transform shape}, font=\sffamily]
+	\begin{scope}
+	%\begin{scope}[decoration={markings,mark=at position 0.5 with {\arrow{>}}}]
+        \pgfmathsetmacro{\numscale}{1.5}
+
+		% left horizontal
+		\draw (0, 0) -- (2, 0);
+		\draw (0, 1) -- (2, 1);
+		\draw (0, 2) -- (2, 2);
+		\draw (0, 3) -- (2, 3);
+		\draw (0, 4) -- (2, 4);
+		% right horizontal
+		\draw (5, 0) -- (7, 0);
+		\draw (5, 1) -- (7, 1);
+		\draw (5, 2) -- (7, 2);
+		\draw (5, 3) -- (7, 3);
+		\draw (5, 4) -- (7, 4);
+
+		% dotted horizontal left
+		\draw [densely dotted] (2, 0) -- ++(0.75, 0);
+		\draw [densely dotted] (2, 1) -- ++(0.75, 0);
+		\draw [densely dotted] (2, 2) -- ++(0.75, 0);
+		\draw [densely dotted] (2, 3) -- ++(0.75, 0);
+		\draw [densely dotted] (2, 4) -- ++(0.75, 0);
+		% dotted horizontal right
+		\draw [densely dotted] (5, 0) -- ++(-0.75, 0);
+		\draw [densely dotted] (5, 1) -- ++(-0.75, 0);
+		\draw [densely dotted] (5, 2) -- ++(-0.75, 0);
+		\draw [densely dotted] (5, 3) -- ++(-0.75, 0);
+		\draw [densely dotted] (5, 4) -- ++(-0.75, 0);
+
+		% left vertical
+		\draw (0, 0) -- (0, 4);
+		\draw (1, 0) -- (1, 4);
+		\draw (2, 0) -- (2, 4);
+		% right vertical
+		\draw (5, 0) -- (5, 4);
+		\draw (6, 0) -- (6, 4);
+		\draw (7, 0) -- (7, 4);
+
+		% top left zig-zag 
+		\draw [red] (0.5,3.5) 
+		-- ++(0, -1)
+		-- ++(1,1)
+		-- ++(0, -1);
+		% bottom left zig zag
+		\draw [red] (0.5,1.5) 
+		-- ++(0, -1)
+		-- ++(1,1)
+		-- ++(0, -1);
+
+		% top left continuation
+		\draw [red,densely dotted] (1.5,2.5) 
+		-- ++(1,1) 
+		-- ++(0,-1)
+		-- ++(0.5,0.5);
+		% bottom left continuation
+		\draw [red,densely dotted] (1.5,0.5) 
+		-- ++(1,1) 
+		-- ++(0,-1)
+		-- ++(0.5,0.5);
+
+		% top right continuation
+		\draw [red,densely dotted] (4.5,3.5) 
+		-- ++(0,-1)
+		-- ++(1,1);
+		% bottom right continuation
+		\draw [red,densely dotted] (4.5,1.5) 
+		-- ++(0,-1)
+		-- ++(1,1);
+
+		% top right zig zag
+		\draw [red] (5.5,3.5) 
+		-- ++(0, -1)
+		-- ++(1,1)
+		-- ++(0, -1);
+		% bottom right zig zag
+		\draw [red] (5.5,1.5) 
+		-- ++(0, -1)
+		-- ++(1,1)
+		-- ++(0, -1);
+
+		% connecting top and bottom
+		% angle: phi = arctan(1/6) = 9.46 degrees
+		%\draw [red] (0.5,1.5) -- (6.5, 2.5);
+		\draw [red,densely dotted] (0.5,1.5) -- (6.5, 2.5);
+		\draw [red] (0.5,1.5) -- ++(9.46:1.75);
+		\draw [red] (6.5,2.5) -- ++(189.46:1.75);
+
+		% numbers...
+		\node [anchor=center,scale=\numscale] at (0.5,3.5) {\contour{white}{0}};
+		\node [anchor=center,scale=\numscale] at (0.5,2.5) {\contour{white}{1}};
+		\node [anchor=center,scale=\numscale] at (1.5,3.5) {\contour{white}{2}};
+		\node [anchor=center,scale=\numscale] at (1.5,2.5) {\contour{white}{3}};
+
+		\node [anchor=center,scale=\numscale] at (0.5,1.5) {\contour{white}{32}};
+		\node [anchor=center,scale=\numscale] at (0.5,0.5) {\contour{white}{33}};
+		\node [anchor=center,scale=\numscale] at (1.5,1.5) {\contour{white}{34}};
+		\node [anchor=center,scale=\numscale] at (1.5,0.5) {\contour{white}{35}};
+
+		\node [anchor=center,scale=\numscale] at (5.5,3.5) {\contour{white}{28}};
+		\node [anchor=center,scale=\numscale] at (5.5,2.5) {\contour{white}{29}};
+		\node [anchor=center,scale=\numscale] at (6.5,3.5) {\contour{white}{30}};
+		\node [anchor=center,scale=\numscale] at (6.5,2.5) {\contour{white}{31}};
+
+		\node [anchor=center,scale=\numscale] at (5.5,1.5) {\contour{white}{60}};
+		\node [anchor=center,scale=\numscale] at (5.5,0.5) {\contour{white}{61}};
+		\node [anchor=center,scale=\numscale] at (6.5,1.5) {\contour{white}{62}};
+		\node [anchor=center,scale=\numscale] at (6.5,0.5) {\contour{white}{63}};
+
+	\end{scope}
+\end{tikzpicture}

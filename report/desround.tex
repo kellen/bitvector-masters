@@ -1,0 +1,91 @@
+\begin{tikzpicture}[thick,scale=\figscale, every node/.style={transform shape}, font=\sffamily]
+    \begin{scope}[decoration={markings,mark= at position 0.5 with {\node[font=\tiny] {/};}}]
+        \pgfmathsetmacro{\h}{0}
+        \pgfmathsetmacro{\sboxW}{1}
+        \pgfmathsetmacro{\sboxP}{0.25}
+	\pgfmathsetmacro{\sboxPH}{0.5 * \sboxP}
+        %\pgfmathsetmacro{\W}{(8 * \sboxW) + (7 * \sboxP)}
+        %\pgfmathsetmacro{\M}{\W / 2}
+
+	\tikzset{sbox/.style={rectangle,minimum size=\sboxW,draw=black,anchor=west}}
+
+        \pgfmathsetmacro{\h}{\h + 0.5}
+        \pgfmathsetmacro{\h}{\h + 1}
+
+	% s boxes
+        \node (Sone) [sbox] at (0,\h){$S_1$};
+        \node (Stwo) [sbox,right=\sboxP of Sone] {$S_2$};
+        \node (Sthr) [sbox,right=\sboxP of Stwo] {$S_3$};
+        \node (Sfou) [sbox,right=\sboxP of Sthr] {$S_4$};
+        \node (Sfiv) [sbox,right=\sboxP of Sfou] {$S_5$};
+        \node (Ssix) [sbox,right=\sboxP of Sfiv] {$S_6$};
+        \node (Ssev) [sbox,right=\sboxP of Ssix] {$S_7$};
+        \node (Seig) [sbox,right=\sboxP of Ssev] {$S_8$};
+
+	% P box
+	\coordinate (inP) at ($ (Sfou.south east) + (\sboxPH,-1) $);
+        \node (P) [anchor=north,rectangle,draw=black,minimum size=\sboxW] at (inP) {P};
+	\draw [<-] (P.north) -- ++(0,0.5);
+        \draw [->,postaction={decorate}] (P.south) -- node[right=1pt] {\tiny 32} ++(0,-0.5);
+
+	% out bus
+	\coordinate (Fi) at ($(Sone.south) + (0,-0.5)$);
+	\coordinate (La) at ($(Seig.south) + (0,-0.5)$);
+	\draw (Fi) -- (La);
+
+	% outgoing
+	\draw [postaction={decorate}] (Sone.south) -- node[right=1pt] {\tiny 4} ++(0,-0.5);
+	\draw [postaction={decorate}] (Stwo.south) -- node[right=1pt] {\tiny 4} ++(0,-0.5);
+	\draw [postaction={decorate}] (Sthr.south) -- node[right=1pt] {\tiny 4} ++(0,-0.5);
+	\draw [postaction={decorate}] (Sfou.south) -- node[right=1pt] {\tiny 4} ++(0,-0.5);
+	\draw [postaction={decorate}] (Sfiv.south) -- node[right=1pt] {\tiny 4} ++(0,-0.5);
+	\draw [postaction={decorate}] (Ssix.south) -- node[right=1pt] {\tiny 4} ++(0,-0.5);
+	\draw [postaction={decorate}] (Ssev.south) -- node[right=1pt] {\tiny 4} ++(0,-0.5);
+	\draw [postaction={decorate}] (Seig.south) -- node[right=1pt] {\tiny 4} ++(0,-0.5);
+	
+	% incoming
+	\draw [<-,postaction={decorate}] (Sone.north) -- node[right=1pt] {\tiny 6} ++(0,0.5);
+	\draw [<-,postaction={decorate}] (Stwo.north) -- node[right=1pt] {\tiny 6} ++(0,0.5);
+	\draw [<-,postaction={decorate}] (Sthr.north) -- node[right=1pt] {\tiny 6} ++(0,0.5);
+	\draw [<-,postaction={decorate}] (Sfou.north) -- node[right=1pt] {\tiny 6} ++(0,0.5);
+	\draw [<-,postaction={decorate}] (Sfiv.north) -- node[right=1pt] {\tiny 6} ++(0,0.5);
+	\draw [<-,postaction={decorate}] (Ssix.north) -- node[right=1pt] {\tiny 6} ++(0,0.5);
+	\draw [<-,postaction={decorate}] (Ssev.north) -- node[right=1pt] {\tiny 6} ++(0,0.5);
+	\draw [<-,postaction={decorate}] (Seig.north) -- node[right=1pt] {\tiny 6} ++(0,0.5);
+
+	% in bus
+	\coordinate (FiT) at ($(Sone.north) + (0,0.5)$);
+	\coordinate (LaT) at ($(Seig.north) + (0,0.5)$);
+	\draw (FiT) -- (LaT);
+
+	\coordinate (xorOut) at ($ (Sfou.north east) + (\sboxPH,0.5) $);
+	\draw (xorOut) -- ++(0,0.5);
+
+        \pgfmathsetmacro{\R}{0.25} 
+	\coordinate (xorC) at ($ (xorOut) + (0,0.5 + \R) $);
+	\coordinate (xorL) at ($ (xorC) + (-\R,0) $);
+	\coordinate (xorR) at ($ (xorC) + (+\R,0) $);
+
+	\draw [red] (xorC) circle [radius=\R];
+	\draw [red] (xorL) -- (xorR);
+	\draw [red] ($ (xorC) + (0,-\R) $) -- ++(0,2*\R);
+
+	\draw [<-] (xorL) -- ++(-1,0);
+	\draw [<-] (xorR) -- ++(1,0);
+
+	% E box
+	\coordinate (outE) at ($ (xorL) + (-1,0.5) $);
+        \node (E) [anchor=south,rectangle,draw=black,minimum size=\sboxW] at (outE) {E};
+	\draw [postaction={decorate}] (E.south) -- node[right=1pt] {\tiny 48} ++(0,-0.5);
+
+	% in to E
+	\draw [<-,postaction={decorate}] (E.north) -- node[right=1pt] {\tiny 32} ++ (0,0.5);
+	\node (blocktext) [anchor=south] at ($ (E.north) + (0,0.5) $) {Half\vphantom{y} block};
+
+	\draw [postaction={decorate}] ($(xorR) + (1,0)$) -- node[right=1pt] {\tiny 48} ++ (0,1.5);
+        \pgfmathsetmacro{\apart}{2 + (2 * \R)} 
+	\node [anchor=south] at ($(xorR) + (1,1.5)$) {Subkey};
+
+    \end{scope}
+\end{tikzpicture}
+

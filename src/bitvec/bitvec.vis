@@ -1,0 +1,70 @@
+[General]
+Name:        Bit
+Namespace:   Gecode::Bit
+
+
+/* MODIFICATION EVENTS */
+[ModEvent]
+Name:        FAILED=FAILED
+// Domain operation has resulted in failure
+
+[ModEvent]
+Name:        NONE=NONE
+// Domain operation has not changed domain
+
+[ModEvent]
+Name:        VAL=ASSIGNED
+// VAL combined with LOWER = VAL
+// VAL combined with UPPER = VAL
+// VAL combined with BND = VAL
+Combine:     VAL=VAL, LOWER=VAL, UPPER=VAL, BND=VAL
+// Domain operation has resulted in an assigned var
+
+[ModEvent]
+Name:        BND=SUBSCRIBE
+// BND combined with VAL = VAL
+// BND combined with LOWER = BND
+// ...
+Combine:     VAL=VAL, LOWER=BND, UPPER=BND, BND=BND
+// Domain operation has resulted in changing the bounds
+
+[ModEvent]
+// ...
+// LOWER combined with UPPER = BND
+// ...
+Name:        LOWER
+Combine:     VAL=VAL, LOWER=LOWER, UPPER=BND, BND=BND
+// Domain operation has resulted in changing the min
+
+[ModEvent]
+Name:        UPPER
+Combine:     VAL=VAL, LOWER=BND, UPPER=UPPER, BND=BND
+// Domain operation has resulted in changing the max
+
+
+/* PROPAGATION CONDITIONS */
+[PropCond]
+Name:        NONE=NONE
+// Propogation ignored
+
+[PropCond]
+Name:        VAL=ASSIGNED
+ScheduledBy: VAL
+// Propagate when view becomes assigned
+
+[PropCond]
+Name:        BND
+ScheduledBy: VAL, BND, LOWER, UPPER
+// Propgate when the bounds change (min/max in int)
+
+[PropCond]
+Name:        LOWER
+ScheduledBy: VAL, BND, LOWER
+// Propagate when the min value changes
+
+[PropCond]
+Name:        UPPER
+ScheduledBy: VAL, BND, UPPER
+// Propagate when the max value changes
+
+[End]

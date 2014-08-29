@@ -1,0 +1,666 @@
+\documentclass[a4paper,landscape,10pt]{article}
+\usepackage[USenglish]{babel}
+\usepackage{color,colortbl}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsthm}
+%\usepackage{fullpage}
+\usepackage{parskip}
+\usepackage{listings}
+% http://tex.stackexchange.com/questions/1375/what-is-a-good-package-for-displaying-algorithms/1376#1376
+%\usepackage{algorithmicx} % algorithms
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm} % algorithms
+%\usepackage{algorithmic}        % algoritms
+\usepackage{float}
+\usepackage{relsize}    % for relative font sizing, e.g. \smaller
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[margin=0in]{geometry}
+\usepackage{multicol}   % multiple columns if you want them
+\usepackage{lmodern}    % typeface
+%\usepackage{fancyhdr}
+\usepackage{emptypage}  % can force pages to be empty
+\usepackage{tikz}       % draw pictures
+\usepackage{mathpazo}   % for the counter in the sudoku picture(?)
+\usepackage{capt-of}    % for putting a figure in the margin
+\usepackage{varwidth}   % for allowing variable-width contents of \set
+\usepackage{multirow}
+\usepackage{xfrac}
+
+\usepackage[T1]{fontenc} 
+\usepackage{fontspec}
+\setmainfont{"Bitstream Vera Sans"}
+\usepackage{csquotes}
+
+\usepackage{ifthen}     % conditional in sudoku pictures
+
+% for scaling up math
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{\ensuremath{#2}}}%
+
+% use this for small caps when there's no smallcaps in the provided package or no bold-smallcaps
+\renewcommand{\smaller}[1]{\relsize{-1}#1\relsize{+1}}
+\newcommand{\cst}[1]{\relsize{-2}#1\relsize{+2}}
+\renewcommand{\sc}[1]{\textsc{\lowercase{#1}}}
+\newcommand{\func}[1]{#1}
+% for empty node filling 
+\newcommand{\isempty}[3]{
+    \ifthenelse{\equal{#1}{}}{#2}{#3}
+}
+% correct sizing for curly braces
+%\newcommand{\set}[1]{\begin{Bmatrix}#1\end{Bmatrix}}
+%\newcommand{\set}[1]{\left{#1\right}}
+
+% for algorithms
+\newcommand*\Let[2]{\State #1 $\gets$ #2}
+
+% abs!
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+% Swap the definition of \abs* and \norm*, so that \abs
+% and \norm resizes the size of the brackets, and the 
+% starred version does not.
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+%
+\let\oldnorm\norm
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+% remake text of FORALL
+\algrenewcommand{\algorithmicforall}{\textbf{for each}}
+\newcommand{\In}{~\textbf{in}~}
+\newcommand{\Constrain}[1]{\State{\textbf{constrain}~#1}}
+
+
+% color style for "highlights" in sudoku
+\usepackage[outline]{contour}
+\definecolor{light-gray}{gray}{0.95}
+\tikzset{sudokufill/.style={fill=light-gray}}
+\tikzset{line/.style={<-,ultra thick}}
+\tikzset{label/.style={scale=2.5,red,anchor=west,font=\bfseries}}
+\tikzset{sel/.style={yellow!40!white}}
+\tikzset{selcell/.style={orange!40!white}}
+\contourlength{1.5pt}
+
+\usepackage{xparse}
+\newcommand{\vc}[1]{\topskip0pt\vspace*{\fill}{#1}\vspace*{\fill}}
+\newcommand{\hone}[1]{\vc{\huge{\textbf{#1}}}}
+\newcommand{\fuck}[2]{\vc{{\huge\textbf{#1}} \vspace{10pt} {#2}}}
+\newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\left(#1\right)}}
+
+\begin{document}
+\DeclareDocumentCommand\head{ m g }{%
+    \vc{%
+        {\huge\textbf{#1\vphantom{g}}}%
+        \IfNoValueF{#2}{
+
+            \vspace{10pt}
+            {#2}
+        }
+    }%
+}
+\centering
+\pagenumbering{gobble}
+\pgfmathsetmacro{\scale}{0.75}
+
+%\vc{\huge{\textbf{Implementation of bit-vector variables in a \\ constraint solver with an application to the \\ generation of cryptographic S-boxes}} } \\ ~ \\ \huge{\color{gray}Kellen Dye} }
+\head{Implementation of bit-vector variables in a \\ constraint solver with an application to the \\ generation of cryptographic S-boxes}{\huge\color{gray}Kellen Dye}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Constraint programming}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Constraint programming}{
+        \huge
+        Variables \\
+        Domains \\
+        Constraints \\
+}
+
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\newcounter{row}
+\newcounter{col}
+
+\newcommand\setrow[9]{
+  \setcounter{col}{1}
+  \foreach \n in {#1, #2, #3, #4, #5, #6, #7, #8, #9} {
+    \edef\x{\value{col} - 0.5}
+    \edef\y{9.5 - \value{row}}
+    \node[anchor=center,scale=2.0] at (\x, \y) {\n};
+    \stepcounter{col}
+  }
+  \stepcounter{row}
+}
+
+\newsavebox{\sudoku}
+\sbox{\sudoku}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku}{\usebox{\sudoku}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokuvar}
+\sbox{\sudokuvar}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[selcell] (1,1) rectangle ++(1,1);
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \coordinate (V) at (4,5);
+        \node [scale=2.5,red,anchor=west] at (V) {\contour{white}{variable}};
+        \path [bend left,line,red] (1.5,1.5) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: variables}{\usebox{\sudokuvar}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokudom}
+\sbox{\sudokudom}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[selcell] (1,1) rectangle ++(1,1);
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \coordinate (V) at (4,5);
+        \node [scale=2.5,red,anchor=south west] at (V) {\contour{white}{domain:}};
+        \node [scale=2.5,red,anchor=north west] at (V) {\contour{white}{\{1,9\}}};
+        \path [bend left,line,red] (1.5,1.5) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: domains}{\usebox{\sudokudom}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokurow}
+\sbox{\sudokurow}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[sel] (1,0) rectangle ++(1,9);
+        \fill[selcell] (1,1) rectangle ++(1,1);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \coordinate (V) at (4,5);
+        \node [scale=2.5,red,anchor=south west] at (V) {\contour{white}{domain:}};
+        \node [scale=2.5,red,anchor=north west] at (V) {\contour{white}{\{5,8\}}};
+        \path [bend left,line,red] (1.5,1.5) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: constraints: columns}{\usebox{\sudokurow}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokucol}
+\sbox{\sudokucol}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[sel] (0,1) rectangle ++(9,1);
+        \fill[selcell] (1,1) rectangle ++(1,1);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \coordinate (V) at (4,5);
+        \node [scale=2.5,red,anchor=south west] at (V) {\contour{white}{domain:}};
+        \node [scale=2.5,red,anchor=north west] at (V) {\contour{white}{\{5,6\}}};
+        \path [bend left,line,red] (1.5,1.5) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: constraints: rows}{\usebox{\sudokucol}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokublock}
+\sbox{\sudokublock}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[sel] (0,0) rectangle ++(3,3);
+        \fill[selcell] (1,1) rectangle ++(1,1);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \coordinate (V) at (4,5);
+        \node [scale=2.5,red,anchor=south west] at (V) {\contour{white}{domain:}};
+        \node [scale=2.5,red,anchor=north west] at (V) {\contour{white}{\{5,6\}}};
+        \path [bend left,line,red] (1.5,1.5) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: constraints: blocks}{\usebox{\sudokublock}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokuprop}
+\sbox{\sudokuprop}{%
+\begin{tikzpicture}
+    \begin{scope}
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \node[anchor=center,scale=2.0,red] at (1.5,7.5) {5};
+
+        \coordinate (V) at (4,5);
+        \node [scale=2.5,red,anchor=north] at (V) {\contour{white}{new!}};
+        \path [bend left,line,red] (1.75,7.5) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: propagation}{\usebox{\sudokuprop}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokuproptwo}
+\sbox{\sudokuproptwo}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[sel] (1,0) rectangle ++(1,9);
+        \fill[selcell] (1,1) rectangle ++(1,1);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \node[anchor=center,scale=2.0,red] at (1.5,7.5) {5};
+
+        \coordinate (V) at (4,5);
+        \node [scale=2.5,red,anchor=south west] at (V) {\contour{white}{domain:}};
+        \node (X) [scale=2.5,red,anchor=north west] at (V) {\contour{white}{\{5,6\}}};
+        \path [bend left,line,red] (1.5,1.5) edge (V);
+        \node [scale=2.5,black,anchor=center] at (5.125,4.30) {X};
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: propagation}{\usebox{\sudokuproptwo}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokuass}
+\sbox{\sudokuass}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \fill[sel] (1,0) rectangle ++(1,9);
+        \fill[selcell] (1,1) rectangle ++(1,1);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \node[anchor=center,scale=2.0] at (1.5,7.5) {5};
+        \node[anchor=center,scale=2.0,red] at (1.5,1.5) {6};
+
+        \coordinate (V) at (4,5);
+        \node [scale=2.5,red,anchor=south west] at (V) {\contour{white}{domain:}};
+        \node (X) [scale=2.5,red,anchor=north west] at (V) {\contour{white}{\{6\}}};
+        \path [bend left,line,red] (1.5,1.9) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: assignment}{\usebox{\sudokuass}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\setcounter{row}{1}
+\newsavebox{\sudokusearch}
+\sbox{\sudokusearch}{%
+\begin{tikzpicture}
+    \begin{scope}
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+        \node [anchor=center,scale=2.0,red] at (1.5,7.5) {5};
+
+        \coordinate (V) at (3.5,5);
+        \node [scale=2.5,anchor=north west] at (3,5) {\contour{white}{propagation}};
+        \node [scale=2.5,anchor=north west] at (3,4) {\contour{white}{or}};
+        \node [scale=2.5,red,anchor=north west] at (3,3.5) {\contour{white}{search}};
+        \path [bend left,line,red] (1.75,7.5) edge (V);
+    \end{scope}
+\end{tikzpicture}
+}
+\head{Sudoku: search}{\usebox{\sudokusearch}}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes}
+
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes (DES)}{ \vspace{10pt} \input{s4.tex} \vspace{10pt} \[\Scale[2]{S_4(11000) = 1111}\]}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\fuck{Substitution boxes: \vspace{5pt} desirable properties }{
+    ~ \\
+    \vspace{10pt}
+    \begin{varwidth}{\textwidth}
+        \Large
+        \begin{enumerate}
+            \item No output bit should be too close to a \\ linear function of the input bits \\
+            \item For each row, each of the 16 possible \\ output patterns should appear only once \\
+            \item If inputs differ by only one bit, \\ their outputs must differ in at least two bits \\
+            \item If inputs differ by only their middle two bits, \\ their outputs must differ in at least two bits \\
+            \item If inputs differ in their first two bits \\ and are identical in their last two, \\ their outputs must not be the same \\
+            \item {The number of pairs of inputs with the same XOR \\ which also share an output XOR \\ should be less or equal to than 16 }\\
+        \end{enumerate}
+    \end{varwidth}
+}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes: \vspace{5pt} desirable properties}{
+    \Large
+    No output bit should be too close to a \\ linear function of the input bits \\
+    \vspace{10pt}
+    \begin{varwidth}{\textwidth}
+        \begin{algorithmic}
+            \For{$\alpha \In \{1..2^n\}$}
+                \For{$\beta \In \{1..2^m\}$}
+                    \Let{$N[\alpha][\beta]$}{$0$}
+                    \For{$x \In S$}
+                        \If{$parity(x \land \alpha) = parity(S(x) \land \beta)$}
+                            \Let{$N[\alpha][\beta]$}{$N[\alpha][\beta] + 1$}
+                        \EndIf
+                    \EndFor
+                \EndFor
+            \EndFor
+            \For{$e \In N$}
+                \Let{$e$}{$abs(e - \sfrac{2^n}{2})$}
+            \EndFor
+            \Let{$score$}{$max(N)$}
+            \Constrain{$score \leq threshold$}
+        \end{algorithmic}
+    \end{varwidth}
+}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes: \vspace{5pt} desirable properties}{
+    \Large
+            For each row, each of the 16 possible \\ output patterns should appear only once \\
+    \vspace{10pt}
+    \begin{varwidth}{\textwidth}
+        \begin{algorithmic}
+            \For{$row \In S$}
+                \Constrain{$all\_different(row)$}
+            \EndFor
+        \end{algorithmic}
+    \end{varwidth}
+}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes: \vspace{5pt} desirable properties}{
+    \Large
+            If inputs differ by only one bit, \\ their outputs must differ in at least two bits \\
+    \vspace{10pt}
+    \begin{varwidth}{\textwidth}
+        \begin{algorithmic}
+            \For{$x \In \{1..2^n\}$}
+                \For{$y \In \{1..2^n\}$}
+                    \If{$hamming\_weight(x,y) = 1$}
+                        \Constrain{$hamming\_weight(S(x),S(y)) \geq 2$}
+                    \EndIf
+                \EndFor
+            \EndFor
+        \end{algorithmic}
+    \end{varwidth}
+}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes: \vspace{5pt} desirable properties}{
+    \Large
+            If inputs differ by only their middle two bits, \\ their outputs must differ in at least two bits \\
+    \vspace{10pt}
+    \begin{varwidth}{\textwidth}
+        \begin{algorithmic}
+            \For{$x \In \{1..2^n\}$}
+                \For{$y \In \{1..2^n\}$}
+                    \If{$x \oplus y = 001100$}
+                        \Constrain{$hamming\_weight(S(x),S(y)) \geq 2$}
+                    \EndIf
+                \EndFor
+            \EndFor
+        \end{algorithmic}
+    \end{varwidth}
+}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes: \vspace{5pt} desirable properties}{
+    \Large
+            If inputs differ in their first two bits \\ and are identical in their last two, \\ their outputs must not be the same \\
+    \vspace{10pt}
+    \begin{varwidth}{\textwidth}
+        \begin{algorithmic}
+            \For{$x \In \{1..2^n\}$}
+                \For{$y \In \{1..2^n\}$}
+                    \If{$(x \oplus y) \land 110011 = 001100$}
+                        \Constrain{$S(x) \neq S(y)$}
+                    \EndIf
+                \EndFor
+            \EndFor
+        \end{algorithmic}
+    \end{varwidth}
+}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Substitution boxes: \vspace{5pt} desirable properties}{
+    \Large
+            The number of pairs of inputs with the same XOR \\ which also share an output XOR \\ should be less or equal to than 16 \\
+    \vspace{10pt}
+    \begin{varwidth}{\textwidth}
+        \begin{algorithmic}
+            \For{$i \In \{1..2^n\}$}
+                \For{$j \In \{1..2^m\}$}
+                    \Let{$T[i][j]$}{$0$}
+                \EndFor
+            \EndFor
+            \For{$x \In \{1..2^n\}$}
+                \For{$y \In \{1..2^n\}$}
+                    \Let{$T[x \oplus y][S(x) \oplus S(y)]$}{$T[x \oplus y][S(x) \oplus S(y)] + 1$}
+                \EndFor
+            \EndFor
+            \For{$t \In T$}
+                \Constrain{$t \leq 16$}
+            \EndFor
+        \end{algorithmic}
+    \end{varwidth}
+}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+
+\head{Bit-vector variables}{{\Large 110011 is a bit-vector \\ ~ \\ "an array of bits"}}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Bit-vector variables}{{\Large Most constraint solvers do not have bit-vector variables \\ and certain operations (e.g. \sc{XOR}) are not easily \\ represented with integer variables}}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Bit-vector variables}{{\Large Additionally, bit-vector variables have the potential \\ to enable $\BigO{1}$ propagation}}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Master's thesis work}{{\Large Implement bit-vector variables and propagators \\ in the open-source constraint solver Gecode \\ and apply this to the problem of \\ finding "good" substitution boxes}}
+\clearpage
+% -----------------------------------------------------------------------------------------------------
+
+\head{Thanks!}
+                   
+\end{document}

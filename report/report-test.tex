@@ -1,0 +1,93 @@
+\documentclass[a4paper,10pt,twoside,openright]{book}
+\usepackage[USenglish]{babel}
+\usepackage{color,colortbl}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsthm}
+%\usepackage{fullpage}
+\usepackage[hidelinks]{hyperref}
+\usepackage{parskip}
+\usepackage{listings}
+% http://tex.stackexchange.com/questions/1375/what-is-a-good-package-for-displaying-algorithms/1376#1376
+%\usepackage{algorithmicx} % algorithms
+\usepackage[noend]{algpseudocode}
+\usepackage[chapter]{algorithm} % algorithms
+%\usepackage{algorithmic}        % algoritms
+\usepackage{float}
+\usepackage{relsize}    % for relative font sizing, e.g. \smaller
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+%\usepackage[margin=0.75in]{geometry}
+\usepackage{multicol}   % multiple columns if you want them
+\usepackage{lmodern}    % typeface
+%\usepackage{fancyhdr}
+\usepackage{emptypage}  % can force pages to be empty
+\usepackage{tikz}       % draw pictures
+\usetikzlibrary{calc,decorations.markings,positioning}
+\usepackage{mathpazo}   % for the counter in the sudoku picture(?)
+\usepackage{capt-of}    % for putting a figure in the margin
+\usepackage{varwidth}   % for allowing variable-width contents of \set
+\usepackage{multirow}
+
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+
+\usepackage{ifthen}     % conditional in sudoku pictures
+
+% for changing the spacing before and after sections
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{0.2cm}{0.2cm}
+\titlespacing*{\subsection}{0pt}{0.2cm}{0.2cm}
+
+% use this for small caps when there's no smallcaps in the provided package or no bold-smallcaps
+\renewcommand{\smaller}[1]{\relsize{-1}#1\relsize{+1}}
+\newcommand{\cst}[1]{\relsize{-2}#1\relsize{+2}}
+\renewcommand{\sc}[1]{\textsc{\lowercase{#1}}}
+\newcommand{\FIXME}[1]{\colorbox{red}{FIXME: #1}}
+\newcommand{\func}[1]{#1}
+% for empty node filling 
+\newcommand{\isempty}[3]{
+    \ifthenelse{\equal{#1}{}}{#2}{#3}
+}
+% correct sizing for curly braces
+%\newcommand{\set}[1]{\begin{Bmatrix}#1\end{Bmatrix}}
+%\newcommand{\set}[1]{\left{#1\right}}
+
+% theorem helpers
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+
+% for algorithms
+\newcommand*\Let[2]{\State #1 $\gets$ #2}
+
+% abs!
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+% Swap the definition of \abs* and \norm*, so that \abs
+% and \norm resizes the size of the brackets, and the 
+% starred version does not.
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+%
+\let\oldnorm\norm
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+
+% color style for "highlights" in sudoku
+\definecolor{light-gray}{gray}{0.95}
+\tikzset{sudokufill/.style={fill=light-gray}}
+
+\begin{document}
+
+\begin{figure}
+    \input{desround.tex}
+\end{figure}
+\end{document}

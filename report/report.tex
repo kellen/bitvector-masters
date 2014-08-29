@@ -1,0 +1,2131 @@
+\documentclass[a4paper,10pt,twoside,openright]{book}
+
+\usepackage[backend=biber,style=numeric-comp,firstinits,doi=false,url=false,isbn=false,sorting=nyvt,date=long,urldate=iso8601]{biblatex}
+\bibliography{report}
+
+%\usepackage{fontspec}           % for resizing the mono font, used below
+%\defaultfontfeatures{Mapping=tex-text}  % For archaic input (e.g. convert -- to en-dash)
+%\setmainfont[
+%    Ligatures=TeX,
+%    SmallCapsFont={Latin Modern Roman Caps},
+%    SlantedFont={* Slanted},
+%    ItalicFeatures  = {
+%        SmallCapsFont = {LMRomanCaps10-Oblique}
+%    },
+%    ]{Latin Modern Roman}
+%\setsansfont{Latin Modern Sans}
+%\setmonofont[Scale=MatchLowercase]{DejaVu Sans Mono}
+\usepackage[USenglish]{babel}   % which language again?
+\usepackage[utf8]{inputenc}     % force utf-8, this might be default for lualatex
+\usepackage[T1]{fontenc}        % force type-1. not sure if this is necessary
+\usepackage{lmodern}            % typeface; might be useful to change to cfr-lm at some point, lighttt gives a lighter typewriter font
+%\usepackage[scaled]{dejavu}
+\usepackage[scaled]{DejaVuSansMono}
+%\usepackage[defaultmono]{droidmono} % monospace non-typewriter typeface, should override lmodern
+%\renewcommand{\rmdefault}{lmr}
+%\renewcommand{\sfdefault}{lmss}
+%\renewcommand{\ttdefault}{dejavumono}
+%\setmonofont[Scale=MatchLowercase]{Droid Sans Mono} % fix mono sizing so it matches lmodern
+%\setmonofont[Scale=MatchLowercase]{DejaVu Sans Mono} % fix mono sizing so it matches lmodern
+\usepackage{color,colortbl}     % color in figures, tables, etc
+
+\usepackage[hidelinks]{hyperref}    % hyperrefs, but don't draw annoying outlines
+
+\usepackage{amsmath}    % pretty math
+\usepackage{mathtools}  % prettier math, including colonequals :=
+\usepackage{amsthm}     % pretty theoroms, definitions, etc
+\usepackage{amssymb}    % pretty symbols
+\usepackage{xfrac}      % for slanted fractions
+\usepackage{stmaryrd}   % for bigparallel
+\usepackage{mathrsfs}   % for fancy uppercase cursive letters
+
+\usepackage{needspace}  % does something fancy for centering of figures on odd/even pages
+\usepackage{calc}       % can do calculations with pagewidth, textwidth, etc
+\usepackage{tabularx}   % allow table columns to wrap automagically with 'X'
+\usepackage{booktabs}   % prettier tables, including midrule/toprule/bottomrule
+\usepackage{underscore} % actually write actual underscores in actual text w/o escaping. still use \_ in math mode
+\usepackage{parskip}    % fixes some paragraph spacing/indent issues
+\usepackage{float}      % enables figures to be placed "H" (here) 
+\usepackage{relsize}    % for relative font sizing, e.g. \smaller
+\usepackage{emptypage}  % can force pages to be empty
+\usepackage{multicol}   % multiple columns spans
+\usepackage{multirow}   % multiple row spans
+\usepackage{titlesec}   % for changing the spacing before and after sections
+\usepackage{mathpazo}   % for the counter in the sudoku picture(?)
+\usepackage{capt-of}    % for putting a figure in the margin
+\usepackage{varwidth}   % for allowing variable-width contents of \set
+\usepackage{csquotes}   % context sensitive quotes; i.e. correct quoting for the language
+\usepackage{ifthen}     % conditional in sudoku pictures
+\usepackage{changepage} % allow adjustwidth to alter the margins around a figure
+\usepackage[format=hang,justification=raggedright]{caption}    % improved captions, "caption outside float" \captionof, caption rotating, hang lines up caption text with "figure"
+\usepackage{subcaption} % same as caption, but for sub-figures
+\usepackage[section]{placeins}  % place the figures AFTER the section has started.
+\usepackage{enumitem}   % custom enumerate labels (S-1, S-2, etc)
+\usepackage{xparse}     % for DeclareDocumentCommand definitions
+\usepackage[shortcuts]{extdash} % for non-breaking hyphenation with the \-/ shortcut
+\usepackage{filecontents}   % fake files
+\usepackage{siunitx}    % decimal-aligned table cells
+% configuration for decimal-aligned table cells
+\sisetup{input-symbols = {()},  % do not treat "(" and ")" in any special way
+         group-digits  = false} % no grouping of digits
+
+% http://tex.stackexchange.com/questions/1375/what-is-a-good-package-for-displaying-algorithms/1376#1376
+\usepackage[noend]{algpseudocode}   % pretty pseudocode, without ending fi's and od's
+\usepackage[chapter]{algorithm}     % algorithms, numbered according to chapter
+\usepackage{listings}               % for program code listings
+\newfloat{algorithm}{htb}{lop}        % force algorithms to float
+
+%\usepackage{subfig}                 % subfigres for side-by-side images
+\usepackage{graphicx}               % lets latex use pictures at all
+\usepackage{tikz}                   % draw pictures
+\usepackage{pgfplots}               % draw plots
+%\pgfplotsset{compat=1.7}
+\usepackage{pgfplotstable}          % fuck yeah! tables from tab-separated data
+%\tikzset{external/system call={pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
+%\tikzset{external/system call={lualatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
+%\usetikzlibrary{external}           % externalize the tikz pictures for faster compilation
+\usetikzlibrary{calc,decorations.markings,positioning} % draw bus-width lines
+%\tikzexternalize[prefix=figures/]   % put the tikz pictures in the "figures" directory
+\usepackage[outline]{contour}       % outlines on text
+\contourlength{0.75pt}
+
+%\usepackage{algorithmic}           % algoritms
+%\usepackage{fullpage}  % overrides documentclass margins; useful for full-page figures or tables
+%\usepackage[margin=0.75in]{geometry}   % override documentclass margins
+%\usepackage{fancyhdr}  % fancy headers and footers
+
+% don't break long equations unless absolutely necessary
+%\relpenalty=9999
+%\binoppenalty=9999
+
+% allow long equations to be split over pages
+\allowdisplaybreaks
+
+% for changing the spacing before and after sections
+\titlespacing*{\section}{0pt}{0.2cm}{0.2cm}
+\titlespacing*{\subsection}{0pt}{0.2cm}{0.2cm}
+\titlespacing*{\subsubsection}{0pt}{0.2cm}{0.2cm}
+
+% use this for small caps when there's no smallcaps in the provided package or no bold-smallcaps
+\renewcommand{\smaller}[1]{\relsize{-1}#1\relsize{+1}}
+\newcommand{\cst}[1]{\relsize{-2}#1\relsize{+2}}
+\renewcommand{\sc}[1]{\textsc{\lowercase{#1}}}
+%\renewcommand{\ln}[1]{\textsc{\lowercase{#1}}}
+\renewcommand{\ln}[1]{{\fontsize{8pt}{8pt}\selectfont#1}}
+
+% visually obvious fixme in the document
+\newif\ifdebug
+\debugfalse
+
+% show all bibliography entries, even if not used, while in debug mode
+\ifdebug\nocite{*}\fi
+
+\newcommand{\FIXME}[1]{\ifdebug\marginpar{{\small\color{red}\textbf{FIXME: #1}}}\fi}
+\newcommand{\CITEME}{\ifdebug{\color{red}\textbf{[cite]}}\fi}
+\newcommand{\bh}[1]{\text{\fontfamily{\sfdefault}\selectfont\textbf{#1}}}
+% for empty node filling 
+\newcommand{\isempty}[3]{
+    \ifthenelse{\equal{#1}{}}{#2}{#3}
+}
+% correct sizing for curly braces
+%\newcommand{\set}[1]{\begin{Bmatrix}#1\end{Bmatrix}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\suchthat}{\,\middle|\,}
+% tuples
+\newcommand{\tuple}[1]{\left\langle #1\right\rangle}
+
+\newcommand{\N}{N(\alpha,\beta)}
+\newcommand{\Nphi}{N_\phi(\alpha,\beta)}
+\newcommand{\Nprime}{N'(\alpha,\beta)}
+
+\newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
+
+% theorem helpers
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+
+% fix pre-theorem spacing
+\makeatletter
+\def\thm@space@setup{%
+    \thm@preskip=\parskip \thm@postskip=0pt
+}
+\makeatother
+
+% make listings look like algorithmic
+\DeclareCaptionFormat{mylst}{\hrule#1#2#3}
+\captionsetup[lstlisting]{format=mylst,labelfont=bf,singlelinecheck=off,labelsep=space}
+\renewcommand*\thelstnumber{\arabic{lstnumber}:}
+
+% for inlines source-code 
+\newcommand*\cd[1]{\texttt{#1}}
+
+% rescale the spacing between \times in order to make things prettier
+\newcommand*\sixbyfour{\begingroup\medmuskip=0mu\relax$6 \times 4$\endgroup}
+\newcommand*\nbym{\begingroup\medmuskip=0mu\relax$n \times m$\endgroup}
+%\newcommand*\sixbyfour{$6\!\times\!4$}
+%\newcommand*\nbym{$n\!\times\!m$}
+
+% for algorithms
+\newcommand*\Let[2]{\State #1 $\gets$ #2}
+\newcommand*\Equivalent[2]{\State #1 $=$ #2}
+\newcommand*\Break{\State \textbf{break}}
+
+% case statements
+\algnewcommand\algorithmiccase{\textbf{case}}
+\algnewcommand\algorithmicof{\textbf{of}}
+\algdef{SE}[CASE]{Case}{EndCase}[1]{\algorithmiccase\ #1}{\algorithmicend\ \algorithmiccase}%
+\algdef{C}[CASE]{CASE}{Of}[1]{\algorithmicof\ #1\ \algorithmicthen}%
+% since we're not using end tags, disable EndCase
+\algtext*{EndCase}
+% redefine function so it's not in small caps
+\newcommand{\func}[1]{\text{\fontfamily{\sfdefault}\selectfont#1}}
+\algdef{SE}[FUNCTION]{Function}{EndFunction}%
+   [2]{\algorithmicfunction\ $\func{#1}$\ifthenelse{\equal{#2}{}}{}{(#2)}}%
+   {\algorithmicend\ \algorithmicfunction}%
+% always put return on its own line
+\algrenewcommand\Return{\State \algorithmicreturn{} }%
+
+% trying to redefine the font used for math operators (names! e.g. max/linear)
+\DeclareSymbolFont{sfoperators}{OT1}{cmss}{m}{n}
+\DeclareSymbolFontAlphabet{\mathsf}{sfoperators}
+\makeatletter
+\def\operator@font{\mathgroup\symsfoperators}
+\makeatother
+
+% operators used in s-box things
+\DeclareMathOperator{\parity}{parity}
+\DeclareMathOperator{\weight}{weight}
+\DeclareMathOperator{\alldifferent}{alldifferent}
+\DeclareMathOperator{\lin}{linear}
+\DeclareMathOperator{\assigned}{assigned}
+\DeclareMathOperator{\disequal}{disequal}
+\DeclareMathOperator{\fixed}{fixed}
+\DeclareMathOperator{\free}{free}
+\DeclareMathOperator{\funccount}{count}
+\DeclareMathOperator{\funcsum}{sum}
+\DeclareMathOperator{\xor}{xor}
+\DeclareMathOperator{\xordist}{xordist}
+\DeclareMathOperator{\channel}{channel}
+\DeclareMathOperator{\nonlinear}{nonlinear}
+\DeclareMathOperator{\weights}{weights}
+\DeclareMathOperator{\propagate}{propagate}
+\DeclareMathOperator{\valid}{valid}
+\DeclareMathOperator{\store}{store}
+\DeclareMathOperator{\sol}{sol}
+\DeclareMathOperator{\var}{var}
+\DeclareMathOperator{\select}{select}
+\DeclareMathOperator{\dfe}{dfe}
+
+% set cardinality
+\DeclarePairedDelimiter\Cardinality{\lvert}{\rvert}%
+% abs!
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+% Swap the definition of \abs* and \norm*, so that \abs
+% and \norm resizes the size of the brackets, and the 
+% starred version does not.
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+%
+\let\oldnorm\norm
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+%c from texinfo.tex
+\def\ifmonospace{\ifdim\fontdimen3\font=0pt }
+
+%c C plus plus
+\def\C++{%
+\ifmonospace%
+    C++%
+\else%
+    C\kern-.1667em\raise.30ex\hbox{\smaller{++}}%
+\fi%
+\spacefactor1000 }
+
+% color style for "highlights" in sudoku
+\definecolor{light-gray}{gray}{0.95}
+\tikzset{sudokufill/.style={fill=gray!40!white}}
+\pgfmathsetmacro{\figscale}{0.5}
+
+% two part definitions
+%\newcommand{\twopartdef}[4]
+%{
+%    \left\{
+%        \begin{array}{ll}
+%            #1 & \mbox{if } #2 \\
+%            #3 & \mbox{if } #4
+%        \end{array}
+%    \right.
+%}
+
+% command for making two minipages side by side as a single figure
+% taking up the entire page regardless of odd-page margins
+% \newlength\widthw
+% \setlength{\widthw}{\textwidth+\marginparsep+\marginparwidth}
+% \newlength{\rf}
+% \newcommand*\definesHSpace{
+%     \checkoddpage
+%     \ifoddpage
+%         \setlength{\rf}{0mm}
+%     \else
+%         \setlength{\rf}{\marginparsep+\marginparwidth}
+%     \fi
+% }
+% \newcommand\comparison[3]{%
+%     \setbox0=\hbox{%
+%         \begin{minipage}[h]{\widthw}%
+%             \begin{minipage}[t]{0.4\widthw}#1\end{minipage}
+%             \hfill
+%             \begin{minipage}[t]{0.56\widthw}#2\end{minipage}
+%             \captionof{figure}{#3}
+%         \end{minipage}%
+%     }%
+%     \needspace{\ht0+\dp0+2\baselineskip}% COMMENT THIS LINE FOR OLD RESULT
+%     \begin{figure}[hT]%
+%     \definesHSpace%
+%     \hspace{-\rf}%
+%     \box0%
+%     \end{figure}
+% }
+% \comparison{
+%     \begin{algorithmic}
+%         \input{xoralg.tex}
+%     \end{algorithmic}
+% }{\small\cd{\lstinputlisting{xorprop.cpp}}}{fuck this shit}
+% %}{\footnotesize\cd{\lstinputlisting{xorprop.cpp}}}{fuck this shit}
+% 
+
+%
+% read plot data and bind it for pgf
+%
+\input{results.tex}
+    \pgfplotstableread{bitdecomphcactivity.tsv}{\bitdecomphcactivity}
+    \pgfplotstableread{bitdecomphcdegree.tsv}{\bitdecomphcdegree}
+    \pgfplotstableread{bitdecomphcnone.tsv}{\bitdecomphcnone}
+    \pgfplotstableread{bitdecomphcrnd.tsv}{\bitdecomphcrnd}
+
+    \pgfplotstableread{bithcactivity.tsv}{\bithcactivity}
+    \pgfplotstableread{bithcdegree.tsv}{\bithcdegree}
+    \pgfplotstableread{bithcnone.tsv}{\bithcnone}
+    \pgfplotstableread{bithcrnd.tsv}{\bithcrnd}
+
+    \pgfplotstableread{bithcssevenactivity.tsv}{\bithcssevenactivity}
+    \pgfplotstableread{bithcssevendegree.tsv}{\bithcssevendegree}
+    \pgfplotstableread{bithcssevennone.tsv}{\bithcssevennone}
+    \pgfplotstableread{bithcssevenrnd.tsv}{\bithcssevenrnd}
+
+    \pgfplotstableread{bitinthcactivity.tsv}{\bitinthcactivity}
+    \pgfplotstableread{bitinthcdegree.tsv}{\bitinthcdegree}
+    \pgfplotstableread{bitinthcnone.tsv}{\bitinthcnone}
+    \pgfplotstableread{bitinthcrnd.tsv}{\bitinthcrnd}
+
+    \pgfplotstableread{boolinthcactivity.tsv}{\boolinthcactivity}
+    \pgfplotstableread{boolinthcdegree.tsv}{\boolinthcdegree}
+    \pgfplotstableread{boolinthcnone.tsv}{\boolinthcnone}
+    \pgfplotstableread{boolinthcrnd.tsv}{\boolinthcrnd}
+
+    \pgfplotstableread{setinthcactivity.tsv}{\setinthcactivity}
+    \pgfplotstableread{setinthcdegree.tsv}{\setinthcdegree}
+    \pgfplotstableread{setinthcnone.tsv}{\setinthcnone}
+    \pgfplotstableread{setinthcrnd.tsv}{\setinthcrnd}
+
+% concat
+\newcommand*\concat{\mathbin{\|}}
+
+\title{Implementation of bit-vector variables in a constraint solver
+with an application to the generation of cryptographic substitution boxes}
+
+\author{
+    Master Thesis in Computer Science \\
+    at the Department of Information Technology \\ 
+    at Uppsala University \\
+    by
+    \href{mailto:Kellen.Dye.0894@student.uu.se}{Kellen Dye}
+}
+
+\date{\today}
+\begin{document}
+\DeclareDocumentCommand\twopartdef{ m m m g }{%
+    \left\{
+        \begin{array}{ll}
+            #1 & \mbox{if } #2 \\
+            #3 & \IfValueTF{#4}{\mbox{if } #4}{\mbox{otherwise}}
+        \end{array}
+    \right.
+}
+\DeclareDocumentCommand\low{ g }{\mathit{low}^{\IfValueTF{#1}{#1}{x}}}
+\DeclareDocumentCommand\up{ g }{\mathit{up}^{\IfValueTF{#1}{#1}{x}}}
+\DeclareDocumentCommand\bitd{ g }{%
+    \tuple{
+        \mathit{low}^{\IfValueTF{#1}{#1}{x}},
+        \mathit{up}^{\IfValueTF{#1}{#1}{x}}
+    }
+}
+\DeclareDocumentCommand\bd{ g }{%
+    \tuple{
+        l^{\IfValueTF{#1}{#1}{x}},
+        u^{\IfValueTF{#1}{#1}{x}}
+    }
+}
+
+\pagestyle{plain}
+\maketitle
+
+\frontmatter
+\pagenumbering{roman} % Roman numerals
+%\cleardoublepage
+\tableofcontents
+
+%\phantomsection \label{listalg}
+%\addcontentsline{toc}{chapter}{List of Algorithms}
+%\listofalgorithms
+%\phantomsection \label{listtab}
+%\addcontentsline{toc}{chapter}{List of Tables}
+%\listoftables
+%\phantomsection \label{listfig}
+%\addcontentsline{toc}{chapter}{List of Figures}
+%\listoffigures
+
+%begin acknowledgements
+\cleardoublepage
+\phantomsection
+\thispagestyle{empty}
+\chapter*{Acknowledgements}
+
+I would like to thank my advisor Jean-No\"{e}l Monette,
+who proposed the subject of this thesis
+and who provided valuable suggestions and feedback
+as well as several crucial insights.
+Additionally, 
+I would like to thank Pierre Flener for his excellent teaching
+in his constraint programming course at Uppsala University,
+and 
+Christian Schulte 
+for producing the most complete and clear definition of constraint programming
+I have read, and for his prompt help with issues on the Gecode mailing list.
+
+\mainmatter%
+\setcounter{page}{1}
+%\cleardoublepage
+\chapter{Introduction}
+\pagenumbering{arabic}
+Secure communications rely on cryptography in order to hide the contents of messages from eavesdroppers. On the internet, these messages might be users' passwords, bank details, or other sensitive information. For the communications to truly be secure, the cryptography must be strong enough to withstand attacks from dedicated adversaries.
+
+Substitution boxes are a component in some cryptographic protocols which are critical to the strength of the entire system. These substitution boxes should have particular properties in order to ensure that the cryptographic system can withstand efforts to decrypt a message. 
+
+Substitution boxes are arrays of bit-vectors, where each bit-vector is itself an array of binary digits, or \textit{bits} (a $0$ or a $1$). The desirable properties of a substitution box can be described as relationships between its constituent bit-vectors.
+
+Constraint programming is a technique used to find values for variables in such a way that certain relationships between the variables are maintained and, optionally, the best values are found. If each bit-vector in a substitution box is represented by a variable, then constraint programming can be used to express the desirable properties of substitution boxes and then find substitution boxes which fulfill these properties.
+
+Constraint programming typically occurs in the context of a program called a \textit{constraint solver} which provides different types of variables such as integers or Booleans. Currently, most solvers do not have support for bit-vectors.
+
+Although it is possible to convert the bit-vectors into another form (for example, interpreting each bit-vector as a number of Boolean variables; one for each bit), some of the desirable properties of substitution boxes are much more easily expressed in terms of bit-vectors. 
+
+This thesis therefore describes the implementation of bit-vector variables in the open-source constraint solver Gecode and their application to the problem of finding high-quality cryptographic substitution boxes. 
+
+In Chapter~\ref{sec:background}, constraint programming is defined, bit-vectors and operations over bit-vectors are introduced, and substitution boxes and their desirable properties are described.
+
+In Chapter~\ref{sec:previous}, the works on which this thesis is based are reviewed. 
+Michel and Van Hentenryck introduce bit-vector variables and domains for constraint programming and also define a number of propagators for bit-vector operations~\cite{bitvectors}.
+Ramamoorthy et al.\ suggested the application of constraint programming to substitution box generation~\cite{sboxes} as well as some method for breaking symmetry in the search space~\cite{sboxsymmetry}.
+
+In Chapter~\ref{sec:contributions} we present our contributions: 
+two additional symmetries of substitution boxes,
+several additional bit-vector propagators, 
+an addition to the non-linearity constraint,
+and
+a correction to the S-7 constraint presented by Ramamoorthy which invalidates previous results.
+
+In Chapter~\ref{sec:implementation}, we detail the bit-vector variable implementation in Gecode. 
+
+In Chapter~\ref{sec:bitvecmodels}, we present several alternative bit-vector models
+for substitution box generation, then 
+in Chapter~\ref{sec:altmodels}, we describe a set variable-based model 
+and a Boolean variable-based model.
+We also define new global propagators for the S-2 nonlinearity constraint
+and the S-7 constraint.
+
+In Chapter~\ref{sec:results}, we give a comparison of the various models for substitution box generation and describe their relative merits.
+Experimental evaluation indicates that modeling substitution boxes with bit-vector variables is an improvement 
+over both 
+set-based model and 
+Boolean-based models
+and that 
+that efficiency can be improved by 
+the implementation of global propagators for some of the substitution box criteria.
+
+Finally, in Chapter~\ref{sec:conclusion} we summarize the thesis and present
+possibilities for future work.
+
+\chapter{Background}
+\label{sec:background}
+Here we present an introduction to constraint programming, bit-vectors, and substitution boxes.
+We use sudoku as a simple example problem for constraint programming, then present a more formal definition.
+Bit-vectors and the relevant operations over them are then presented.
+Finally, substitution boxes and their desirable properties are introduced.
+
+\section{Constraint Programming}
+Constraint programming is a method of solving problems in which the problem is characterized as a set of \textit{constraints} over a set of \textit{variables}, each of which has a \textit{domain} of potential values. The constraints describe relationships between variables and limits on the variable domains. Taken together, these form a \textit{constraint satisfaction problem}.
+
+Finding a solution to a specific problem is typically done within a \textit{constraint solver}, a program which can be used for many different problems and which can provide implementations for commonly used constraints.
+
+The solver performs inference on the potential domains of the variables in a process called \textit{propagation} in which the domain of a variable is reduced by eliminating values not satisfying a constraint and subsequently applying the implications of the altered domain to other variables.  
+Once the propagators can no longer make additional changes to variable domains, they are said to be at \textit{fixpoint} and the solver then performs systematic \textit{search} by altering the domain of a variable. Search is interleaved with the propagation described above.
+
+Search occurs in the \textit{solution space}, that is, all possible combinations of values for all variables. 
+The searching of the solution space can be represented as a \textit{search tree}, where each search choice creates a branch and propagation occurs at the nodes of the tree.
+In the case that a search choice leads to the violation of a constraint or to a variable having no potential values, that part of the space is said to be \textit{failed} and the search engine backtracks up the search tree and tries a different choice. 
+
+Once a variable's domain is reduced to a single value, it is \textit{assigned}, and once all variables are assigned the solver has produced a \textit{solution}, so long as no constraints have been violated.
+
+Certain problems may also require a problem-specific \textit{objective function} to be optimized. The objective function evaluates the variable domains and produces a value which is to be minimized or maximized. Problems with such an objective function are called \textit{constrained optimization problems}.
+
+Constraint programming follows a \textit{declarative} programming paradigm. Most programming is \textit{imperative}, in which the steps needed to produce a solution are written by the programmer and followed by the computer. In declarative programming, the programmer describes the properties of a problem's solution, but not the method by which this should be computed~\cite{declarative}.
+
+\subsection{Example: Sudoku}
+\pgfmathsetmacro{\figscale}{0.5}
+\begin{figure}
+    \centering
+    \input{sudoku.tex}
+    \caption{An example sudoku puzzle}
+    \label{fig:sudoku}
+\end{figure}
+
+Sudoku is a kind of combinatorial puzzle which provides a simple example for demonstrating the application of constraint programming to a concrete problem. See Figure~\ref{fig:sudoku} for an example sudoku puzzle. 
+
+The goal of sudoku is for the player to fill in each of the grid squares of a $9\times9$~grid with one the numbers 1--9. Some grid squares are pre-filled and are intended to give a unique solution to the puzzle. The sudoku grid is divided into rows (Figure~\ref{fig:sudokurow}) and columns (Figure~\ref{fig:sudokucol}), and into nine $3 \times 3$ blocks (Figure~\ref{fig:sudokublock}). 
+\pgfmathsetmacro{\figscale}{0.35}
+\begin{figure}[hbt]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \input{sudoku-row.tex}
+        \caption{row}
+        \label{fig:sudokurow}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \input{sudoku-col.tex}
+        \caption{column}
+        \label{fig:sudokucol}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \input{sudoku-block.tex}
+        \caption{block}
+        \label{fig:sudokublock}
+    \end{subfigure}
+    \caption{Regions of the sudoku grid}
+    \label{fig:sudokuparts}
+\end{figure}
+
+The rules of sudoku are simple: in each row, column, or block, each of the numbers 1--9 must be present and may not be repeated. Once all grid squares are filled and this rule is fulfilled, the puzzle is solved.
+
+To produce a constraint satisfaction problem from a specific sudoku puzzle, the puzzle must first be \textit{modelled} by defining the variables, their domains, and the constraints imposed upon them.
+
+Each grid square can be represented by a variable, so there are $9 \times 9 = 81$ variables. Each of these variables can take on values 1--9, so their initial domains are: $\set{1,2,3,4,5,6,7,8,9}$.
+
+For the pre-filled values, the domain associated with that variable contains only a single value, for example: $\set{5}$
+
+The rules of the puzzle are implemented as constraints over a subset of the variables. The rule we wish to express is that the values taken by the variables in a given row (or column, or block) should all be different. The constraint which can enforce this relationship is also called $\alldifferent$. A constraint must be defined for each row, column and block in the grid so a complete model consists of $9~rows + 9~columns + 9~blocks = 27~constraints$
+
+Once the variables, domains, and constraints are defined, they may be used by a constraint solver to solve the problem by first reducing the variable domains by propagation, then by search, if necessary.
+
+\subsubsection{Propagation for a single variable}
+\pgfmathsetmacro{\figscale}{0.5}
+\begin{figure}
+    \centering
+    \input{sudoku-square.tex}
+    \captionof{figure}{The grid square represented by $x$}
+    \label{fig:sudokusquare}
+\end{figure}
+
+In Figure~\ref{fig:sudokusquare}, a single grid square is indicated; let it be represented
+by a variable $x$. 
+Initially,
+the domain for $x$ is: $\set{1,2,3,4,5,6,7,8,9}$,
+like the domains of all variables representing empty grid squares.
+
+The variable $x$ is a member of three $\alldifferent$ constraints: one for its block, one for its column, and one for its row.
+
+First we apply the $\alldifferent$ constraint for the block; in the block there are the assigned values $1$, $2$, and $9$. Since the constraint says that $x$'s value must be different from all other values, we remove these from the domain of $x$: $\set{3,4,5,6,7,8}$
+
+Next, the $\alldifferent$ constraint for the column is applied; here there are the values $1$, $2$, $3$, $4$, and $9$. The values $1$, $2$, and $9$ are no longer a part of $x$'s domain, so these have no effect. We remove the remaining values $3$ and $4$ from the domain of $x$: $\set{5,6,7,8}$
+
+Finally, the $\alldifferent$ constraint for the row is applied. The values $2$ and $4$ have already been removed, but the remaining values $7$ and $8$ are removed from the domain of $x$: $\set{5,6}$
+
+Thus, by propagating just the three constraints in which $x$ is directly involved and only examining the initially-provided values, the domain of $x$ has been reduced to only two possibilities. Actual propagation by a constraint solver will also change the domains of the other variables, and provide better inference. For example, if $x$'s domain is $\set{5,6}$, but no other variable in its block has $5$ in its domain, the propagator can assign $x$ to $5$ directly.  
+
+\subsection{Definition}
+\input{definition-schulte.tex}
+
+\section{Bit-vectors}
+Bit-vectors are arrays of Boolean variables where each variable is represented by a single binary digit or \textit{bit}. 
+
+The bits of an $n$-bit bit-vector $x$ are addressed as $x_i$ where $i$ is the \textit{index}, with $0 \leq i < n$. 
+The bit at index $0$ is the \textit{least significant bit} while the bit at $n-1$ is the \textit{most significant bit}.
+%When a bit-vector is written as a binary number or string, the least significant bit is written at the right; for example, if $x = 1110$, the least significant bit, $x_0$, is $0$.
+
+\subsection{Integers}
+A bit-vector $x$ can be interpreted as a non-negative integer: 
+\[ I(x) = \sum_{i=0}^{n-1}x_i \cdot 2^i \]
+
+\subsection{Concatenation}
+A bit-vector can be seen as a concatenation of bits:
+\[x = x_0 \concat x_1 \concat \ldots \concat x_{n-1} = \bigparallel_{i=0}^{n-1} x_i\]
+
+So the concatenation of a bit-vector $x$ and a single bit $b$ is:
+
+\[x \concat b = x_0 \concat x_1 \concat \ldots \concat x_{n-1} \concat b\qquad \text{or}\qquad b \concat x = b \concat x_0 \concat x_1 \concat \ldots \concat x_{n-1}\]
+
+Note that the argument to the right of the concatenation operator is concatenated after the most significant bit of the bit-vector, that is, to the \textit{left} side of the bit-vector, when written as a string.
+
+For example, the bit-vector $100$ could be written as $0 \concat 0 \concat 1$, and the concatenation of the bit-vector $100$ and the bit $1$, $100 \concat 1$ results in the bit-vector $1100$.
+
+\subsection{Bitwise operations}
+\textit{Bitwise} operations are logical Boolean operations applied to each bit position of the bit-vector inputs to the operation. For operations with more than one input, the inputs must be of the same length, $n$. The result of a bitwise operation is a bit-vector also of length $n$.
+
+The result of bitwise operations can therefore be seen as concatenations of the logical operations applied to single bit positions. For a binary Boolean operation $\mathop{op}$ and input bit-vectors $x$ and $y$, both of length $n$: 
+\[x\,\mathop{op}\,y = \bigparallel_{i=0}^{n-1}\left(x_i\,\mathop{op}\,y_i\right)\]
+
+And for unary operations:
+\[\mathop{op}~x = \bigparallel_{i=0}^{n-1}\left(\mathop{op}~x_i\right)\]
+
+The bitwise operations are denoted with their logical operator symbols or name: \sc{AND} ($\land$), \sc{OR} ($\lor$), \sc{XOR} ($\oplus$), \sc{NOT} ($\lnot$).
+
+\subsection{Parity}
+The result of the Boolean function \textit{parity} is $1$ if the number of ones in the input bit-vector $x$ is odd and $0$ otherwise: \[\parity(x) = x_0 \oplus x_1 \oplus \ldots \oplus x_{n-1} = \bigoplus_{i=0}^{n-1}x_i\]
+
+\subsection{Linear combination}
+\label{sec:linear}
+The linear combination of two bit-vectors $x$ and $y$ is the parity of the bitwise \sc{AND}: \[
+\begin{aligned}
+\lin\left(x,y\right) &= \left(x_0 \land y_0\right) \oplus \left(x_1 \land y_1\right) \oplus \ldots \oplus \left(x_{n-1} \land y_{n-1}\right) \\
+ & = \bigoplus_{i=0}^{n-1}\left(x_i \land y_i\right) \\
+ & = \parity\left(x \land y\right)
+\end{aligned}
+\]
+
+\subsection{Hamming weight}
+\label{sec:hamming}
+The hamming weight is the integer count of the nonzero bits of a bit-vector $x$: \[\weight(x) = x_0 + x_1 + \ldots + x_{n-1} = \sum_{i=0}^{n-1}x_i\]
+\iffalse
+\subsection{Shifts}
+
+For shifts and rotations, the directions \textit{left} and \textit{right} are used in relation to the bit-vector when written as a string, that is, with the least significant bit on the right and the most significant bit on the left.
+
+The left shift operation \sc{SHL} ($\ll$) moves the bits of an $n$-bit bit-vector $x$ to the left by $k$ places, discarding the $k$ leftmost most bits and filling the first $k$ bits with zero: 
+\[SHL(x, k) = \twopartdef{0}{i<k}{x_{i-k}} 0 \leq i < n\]
+
+The right shift operation \sc{SHR} ($\gg$) moves bits of a $n$-bit bit-vector $x$ to the right by $k$ places, discarding the $k$ rightmost bits and filling the $k$ leftmost bits with zero: 
+\[SHR(x, k) = \twopartdef{x_{i+k}}{i<n-k}{0} 0 \leq i < n\]
+
+\subsection{Rotations}
+The left rotation (or \textit{circular shift}) operation \sc{ROTL} ($\lll$) moves the bits of an $n$-bit bit-vector $x$ to the left by $k$ places and introduces the leftmost $k$ bits as the rightmost $k$ bits in the result: 
+\[ROTL(x,k) = \twopartdef{x_{n-k+i}}{i<k}{x_{i-k}} 0 \leq i < n \]
+
+The right rotation operation \sc{ROTR} ($\ggg$) moves the bits of an $n$-bit bit-vector $x$ to the right by $k$ places and introduces the rightmost $k$ bits as the leftmost $k$ bits in the result:
+\[ROTR(x,k) = \twopartdef{x_{i+k}}{i<n-k}{x_{n-k-i}} 0 \leq i < n \]
+\fi
+\subsection{Hardware support}
+Computers typically represent data as bit-vectors in both \sc{CPU} registers and in memory. The \sc{CPU} operates on fixed-length bit-vectors, called words, which can differ in length from machine to machine~\cite{word}. Bitwise operations and shifts are provided as \sc{CPU} instructions in, for example, x86 processors~\cite{x86}.
+
+\subsection{Support in constraint solvers}
+Constraint solvers typically reason over integer variables, but additional variable types have been implemented. The bit-vectors described in this thesis are implemented in Gecode, an open-source constraint solver, written in \C++~\cite{gecode}. Gecode currently provides integer, Boolean, float, and set variables~\cite{MPG:M}.
+
+In some cases it can be more natural to reason about bit-vectors than other representations. As an example, the \sc{XOR} operation is more-easily understood using bit-vector rather than integer variables.
+
+Constraints which can be expressed with bit-vectors can of course also be expressed using arrays of Boolean variables with one variable per bit, or with set variables where the set contains the indexes of the 'on' bits. The approach with an array of Boolean variables is called \textit{bit-blasting} which can create very large numbers of variables. 
+
+Using bit-vector variables in a constraint solver allows for constant-time propagation algorithms if the length of the bit-vectors is less than the word size of the underlying computer architecture~\cite{bitvectors}.
+
+\section{Substitution boxes}
+\begin{figure*}
+    %\begin{adjustwidth}{0cm}{-2cm}
+        \centering
+        \setlength{\tabcolsep}{2pt}
+        \footnotesize
+        \input{s4.tex}
+        \caption[\sc{DES}'s $S_4$ S-box]{\sc{DES}'s \sixbyfour{} S-box $S_4$. Highlighted is the row and column for the input pattern $110000$. The output for this pattern is $1111$.}
+        \label{fig:sbox}
+    %\end{adjustwidth}
+\end{figure*}
+\pgfmathsetmacro{\figscale}{0.65}
+\begin{figure}
+    \centering
+    \input{bitpattern.tex}
+    \caption{The pattern of inputs in a \sixbyfour{} S-box}
+    \label{fig:bitpattern}
+\end{figure}
+The goal of cryptography is to hide the contents of messages such that if a message between two parties is intercepted by a third, this third party will not easily be able to recover the message contents.
+
+In order for both parties to be able to read messages from the other, they must have some kind of shared secret information. One such method is for both parties to have a copy of the same \textit{key}, which both encrypts ("locks") and decrypts ("unlocks") the contents of a message; this is called \textit{symmetric-key cryptography}. The method or algorithm by which encryption is performed is called a \textit{cipher} and the encrypted text produced by a cipher is called the \textit{ciphertext}.
+
+Substitution boxes, or \textit{S-boxes}, are used in order to obscure the relationship between the key and the ciphertext, a property called \textit{confusion}~\cite{shannon}. S-boxes are look-up tables which provide a mapping from a certain input to an output. An example of an S-box is given in Figure~\ref{fig:sbox}. 
+
+S-boxes are categorized based on their input and output sizes; a box which takes $n$ bits of input and produces $m$ bits of output is a \nbym{} S-box. The example given is a \sixbyfour{} S-box. The input for the example S-box is 6 bits long, the first and last of which are used to determine the row, while the middle 4 bits determine the column. In the example, an input of $110000$ results in an output of $1111$.
+Figure~\ref{fig:bitpattern} shows the pattern made by increasing inputs to an S-box; 
+for an even input $i$, the next input, $i + 1$ is on the subsequent row, 
+and for an odd input $j$, the next input, $j+1$ is on the preceding row,
+except for $j = 2^{n-1}-1$, which is the last input in its row.
+\FIXME{ugh, this wording is awful}
+
+Substitution boxes are used in substitution\-/permutation networks and Feistel ciphers, both of which divide the encryption process into a number of \textit{rounds} in which a portion of the message and a portion of the key are combined and then passed through a number of S-boxes to produce a new interim message which will be processed by further rounds of the encryption process~\cite{crypto}. The Data Encryption Standard, or \sc{DES}, is a once-popular symmetric-key encryption scheme which uses a Feistel cipher.
+\pgfmathsetmacro{\figscale}{0.5}
+\begin{figure}
+    \centering
+    \input{feistel.tex}
+    \caption[Feistel cipher]{Feistel cipher. The \ln{64}-bit plaintext is initially split into two \ln{32}-bit half-blocks, $L_0$ and $R_0$, and passed into the \textit{Feistel function} $F$, along with the subkey for round $0$, $K_0$. Each subsequent round follows the same pattern.}
+    %\captionof{figure}[Feistel cipher]{The \ln{64}-bit plaintext is initially split into two \ln{32}-bit half-blocks, $L_0$ and $R_0$, and passed into the \textit{feistel function} $F$, along with the subkey for round $0$, $K_0$. Each subsequent round follows the same pattern.}
+    %\captionof{figure}{Feistel cipher. }
+    \label{fig:feistel}
+\end{figure}
+
+\pgfmathsetmacro{\figscale}{1}
+\begin{figure}
+    \centering
+    \input{desround.tex}
+    \caption[Feistel function]{Feistel function, F. The \ln{32}-bit half-block passes through the extender $E$ to produce a \ln{48}-bit extended block. The extended block is \sc{XOR}ed with the \ln{48}-bit subkey, then split into eight \ln{6}-bit portions which are passed through the substitution boxes $S_1$--$S_8$, producing eight \ln{4}-bit outputs. These outputs are reassembled into a single \ln{32}-bit pattern and finally passed through the permutation box $P$.}
+    \label{fig:desround}
+\end{figure}
+
+\sc{DES} operates on a \ln{64}-bit block of a message and produces a \ln{64}-bit ciphertext as output. Each block is passed through 16 rounds, each of which operates on a \ln{32}-bit half of a message block and a \ln{48}-bit subkey. A different subkey is generated for each round from the overall key. See Figure~\ref{fig:feistel}.
+
+In each \sc{DES} round, shown in Figure~\ref{fig:desround}, the half-block is first expanded to \ln{48}-bits, then the expanded half-block and the subkey are \sc{XOR}ed together. The resultant \ln{48}-bit block is then passed through 8 predefined S-boxes, each of which takes 6 bits of input and gives a \ln{4}-bit output, resulting in a new \ln{32}-bit interim message. The interim message is then \textit{permuted} by a \textit{permutation box} or \textit{P-box} which \textit{diffuses} the contents of the message in order to make the output more uniform and therefore more difficult to analyze. Finally, the result of the P-box is \sc{XOR}ed with the half-block which was used as input to the previous round in order to produce the new half-block for the following round~\cite{biham}.
+
+As the S-boxes are the only non-linear part of a Feistel or substitution\-/permutation network, and it is the non-linearity of the system which makes it difficult to cryptanalyze, it is critical to the security of the system that the S-boxes be as non-linear as possible~\cite{sboxes}. In the next section, we describe ways of evaluating the linearity of an S\=/box.
+
+\subsection{Measuring the linearity of an S-box}
+
+The linearity of an S-box can be investigated by examining the correlation between the input and output bits of an \nbym{} S-box $S$.
+
+Matsui~\cite{matsui} calculates the probability that a set of input bits $\alpha$ (a bit-vector) coincides with a set of output bits $\beta$ (another bit-vector). A desirable property for an S-box is that this probability, $p(\alpha, \beta)$, should be close to $\sfrac{1}{2}$.
+
+For an S-box $S$, the number of matches between a pair $\alpha$ and $\beta$ is the count of the number of times 
+$\lin(x,\alpha)$ equals $\lin(S(x),\beta)$ 
+for all possible inputs $x$: 
+\[\N = \Cardinality{\set{x\,\middle|\,0\leq x < 2^n,\,\lin(x,\alpha) = \lin(S(x),\beta)}}\] 
+where $n$ is the number of input bits to the S-box and $S(x)$ is the output of the S-box $S$ for the input $x$. We will call $\N$ the \textit{count} of the S\=/box, as Matsui did not give a name.
+
+Since $0 \leq \N \leq 2^n$, the probability that some $\alpha$ coincides with some $\beta$ is \[p(\alpha, \beta) = \frac{\N}{2^n}\]
+
+Equivalently, since $p(\alpha,\beta)$ should be close to $\sfrac{1}{2}$, $\N$ should be close to $\sfrac{{2^n}\hspace{-0.4em}}{2}$. In the case of the \sixbyfour{} S-boxes used in \sc{DES}, $\N$ should be close to $32$.
+
+\begin{example}
+\label{ex:lat-entry} For a \sixbyfour{} S-box and $\alpha = 16$ (binary $010000$), $\beta = 15$ (binary $1111$), the value $N(16, 15) = 12$ indicates that the probability that an input bit at index 5 of $S$\footnote{Matsui's example; he gives this as the fourth input bit, presumably using 0-based ordinals} coincides with an \sc{XOR}ed value of all output bits with probability $\sfrac{12}{64} \approx 0.19$.
+\end{example}
+
+\begin{table}
+    \begin{tabular}{cc|rrrrrrrrrrrrrrr}
+    \multicolumn{2}{c|}{} & \multicolumn{15}{c}{$\beta$} \\
+	&	&	1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 \\
+\hline
+	&	\ldots & \multicolumn{15}{c}{\ldots} \\
+\multirow{4}{*}{$\alpha$}
+	&	13	&	6	&	0	&	2	&	0	&	-2	&	4	&	-10	&	-2	&	0	&	-2	&	4	&	-2	&	8	&	-6	&	0	\\
+	&	14	&	-2	&	-2	&	0	&	-2	&	4	&	0	&	2	&	-2	&	0	&	4	&	2	&	-4	&	6	&	-2	&	-4	\\
+	&	15	&	-2	&	-2	&	8	&	6	&	4	&	0	&	2	&	2	&	4	&	8	&	-2	&	8	&	-6	&	2	&	0	\\
+	&	16	&	2	&	-2	&	0	&	0	&	-2	&	-6	&	-8	&	0	&	-2	&	-2	&	-4	&	0	&	2	&	10	&	-20	\\
+	&	\ldots & \multicolumn{15}{c}{\ldots} \\
+    \end{tabular}
+    \caption[Example linear approximation table]{Portion of a linear approximation table for \sc{DES}'s $S_5$}
+    \label{tab:lat}
+\end{table}
+
+$\N$ itself is less interesting than its closeness to $\sfrac{1}{2}$ which Matsui collects in a table called the \textit{linear approximation table}, $\mathit{LAT}$. A portion of the $\mathit{LAT}$ for \sc{DES}'s $S_5$ substitution box is given in table~\ref{tab:lat}. The rows of the table correspond to $\alpha$, where $1 \leq \alpha < 2^n$, and the columns correspond to $\beta$ where $1 \leq \beta < 2^m$. 
+
+An entry in this table is \[\mathit{LAT}(\alpha, \beta) = \N - \frac{2^n}{2}\]
+
+An S-box is only as good as its weakest point, so an overall evaluation criteria for non-linearity can be defined as a \textit{score}, $\sigma$, where "good" S-boxes have a lower score:
+\[\sigma = \max_{\alpha,\beta}\left\{\abs{\mathit{LAT}\left(\alpha,\beta\right)}\right\}\]
+
+\subsection{DES S-Box design criteria}
+
+\sc{DES} was designed at \sc{IBM} in the 1970s, but the design criteria for the substitution boxes were kept a secret until after the description of differential cryptanalysis by Biham and Shamir in~\cite{biham}. In 1994, Coppersmith disclosed the criteria in~\cite{coppersmith}, given in Table~\ref{tab:descriteria}. 
+
+Criteria S-2 describes a weaker evaluation of an S-box for linearity than the one given by Matsui. Coppersmith calls Matsui's variant S-2$'$ and recommends it as a better criteria for the evaluation of future cryptographic systems. Specifically, S-2 says only that \textit{single output bits} should not be "too close to a linear function of the input bits" while S-2$'$ considers all possible combinations of output bits. 
+
+These criteria form the basis of the constraint programming model for substitution box generation discussed in the next chapter. 
+Note that criteria S-4, S-5, and S-6 are requirements on pairs of S-box entries; these can be enforced by simple pairwise constraints. 
+In contrast, criteria S-2, S-3, and S-7 are requirements on groups of variables; these can be enforced by global propagators which can potentially achieve much better propagation than a collection of simple constraints expressing the same requirement.
+
+\begin{table}
+    \newlist{SL}{enumerate}{1}
+    \setlist[SL]{label=S-\arabic*}
+\begin{SL}
+    \item Each S-box has six bits of input and four bits of output. \\
+    \item No output bit of an S-box should be too close to a linear function of the input bits. \\
+    \item If we fix the leftmost and rightmost input bits of the S-box and vary the four middle bits, each possible \ln{4}-bit output is attained exactly once as the middle four input bits range over their 16 possibilities. \\
+    \item If two inputs to an S-box differ in exactly one bit, the outputs must differ in at least two bits. \\
+    \item If two inputs to an S-box differ in the two middle bits exactly, the outputs must differ in at least two bits. \\
+    \item If two inputs to an S-box differ in their first two bits and are identical in their last two bits, the two outputs must not be the same. \\
+    \item For any nonzero \ln{6}-bit difference between inputs, $\Delta I$, no more than eight of the 32 pairs of inputs exhibiting $\Delta I$ may result in the same output difference $\Delta O$ \\
+\end{SL}
+\caption{\sc{DES} design criteria}
+\label{tab:descriteria}
+\end{table}
+
+\chapter{Previous work}
+\label{sec:previous}
+In this chapter the works on which this thesis is based are presented. 
+We first introduce a bit-vector variable domain 
+and bit-vector constraints described by 
+Michel and Van Hentenryck in~\cite{bitvectors}.
+We then review 
+two works by Ramamoorthy et al.\ which 
+describe the application of constraint programming
+to S-box generation
+and symmetries of S-boxes,
+based on the \sc{DES} design criteria~\cite{sboxes}\cite{sboxsymmetry}.
+
+\section{Bit-vector variables \& constraints}
+\label{sec:bitvectors}
+
+% def 3, ordering
+Ordering on bit-vectors $b_1$ and $b_2$ is defined according to the integer representation: $b_1 \leq b_2$ if $I(b_1) \leq I(b_2)$.
+
+% def 4, bit vector domain
+A bit-vector domain is a pair $\tuple{l,u}$ where $l$ and $u$ are bit-vectors and $l_i \leq u_i$ for $0 \leq i < k$. 
+The \textit{free bits} of the domain, the bits which are not assigned to either $1$ or $0$, are \[V(\tuple{l,u}) = \set{i \suchthat 0 \leq i < k, l_i < u_i}\]
+The free bits can be found in constant time \[\free(\tuple{l,u}) = u \oplus l\]
+
+The \textit{fixed bits} of the domain, the bits which are assigned to either $1$ or $0$, are \[F(\tuple{l,u}) = \set{i \suchthat 0 \leq i < k, l_i = u_i}\]
+The fixed bits can be found in constant time \[\fixed(\tuple{l,u}) = \lnot\free(l,u)\]
+
+A bit-vector domain then represents the set of bit-vectors 
+\[\set{b \suchthat l \leq b \leq u \land \forall i \in F(\tuple{l,u}) : b_i = l_i }\]
+
+% def 5, bit domain
+A bit domain is the domain of bit $i$ in a bit-vector domain $D$, $D_i = \set{b_i \suchthat b \in D}$.
+
+% def 6, bit-vector variables
+A bit-vector variable $x$ is associated with a domain $D = \tuple{l,u}$. $l^x$ and $u^x$ denote the bit-vectors defining $x$'s domain and $F^x$ and $V^x$ denote $F(\tuple{l^x,u^x})$ and $V(\tuple{l^x,u^x})$. 
+% FIXME def 7, domain consistency?  FIXME def 8, bit consistency?
+
+For a binary constraint $c$ over two variables $x$ and $y$ with domains $\tuple{l^x,u^x}$ and $\tuple{l^y,u^y}$, the goal of propagation is to determine new domains $\tuple{\mathit{low}^x,\mathit{up}^x}$ and $\tuple{\mathit{low}^y,\mathit{up}^y}$ and to check if the constraint has failed. 
+The check for failure is done by checking if the new domains are valid, that is if $\forall i : 0 \leq i < k : l_i \leq u_i$. 
+Assuming that the length of the bit-vector is less than the length of the word-size of the executing computer,
+this test can be done in constant time by the expression \[\valid(\tuple{l,u}) = \lnot(l \oplus u) \lor u\]
+where $\valid$ is true if all bits of the resultant bit-vector are set to $1$.
+
+Michel and Van Hentenryck define propagators for 
+a number of bit-vector operations;
+described here are only the propagators for the constraints used in the implementation of the \sc{DES} design criteria.
+
+%\subsection{Logical constraints}
+The propagator for equality between two bit-vector variables $x$ and $y$ is given in Algorithm~\ref{alg:equals}. 
+% implemented: equality
+\begin{algorithm}
+    \caption{Propagator for $x = y$}
+    \label{alg:equals}
+    \begin{algorithmic}
+        \Function{propagate}{$x = y$}
+            \Let{$\low$}{$l^x \lor l^y$}
+            \Let{$\low{y}$}{$\low$}
+            \Let{$\up$}{$u^x \land u^y$}
+            \Let{$\up{y}$}{$\up$}
+            \Let{$\bd$}{$\bitd$}
+            \Let{$\bd{y}$}{$\bitd{y}$}
+            \Return{$\valid(\bd) \land \valid(\bd{y})$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+% implemented: xor
+The \sc{XOR} constraint holds for three bit-vectors $x$, $y$, and $z$, of equal length if 
+$x \oplus y = z$, 
+the propagator for this relationship is given in Algorithm~\ref{alg:xor}.
+\begin{algorithm}
+    \caption{Propagator for $x \oplus y = z$}
+    \label{alg:xor}
+    \begin{algorithmic}
+        \Function{propagate}{$x \oplus y = z$}
+            \Let{$\mathit{low}^x$}{$l^x \lor (\lnot u^z \land l^y) \lor (l^z \land \lnot u^y)$}
+            \Let{$\mathit{up}^x$}{$u^x \land (u^z \lor u^y) \land \lnot(l^y \land l^z)$}
+            \Let{$\mathit{low}^y$}{$l^y \lor (\lnot u^z \land l^x) \lor (l^z \land \lnot u^x)$}
+            \Let{$\mathit{up}^y$}{$u^y \land (u^z \lor u^x) \land \lnot(l^x \land l^z)$}
+            \Let{$\mathit{low}^z$}{$l^z \lor (\lnot u^x \land l^y) \lor (l^x \land \lnot u^y)$}
+            \Let{$\mathit{up}^z$}{$u^z \land (u^x \lor u^y) \land \lnot(l^x \land l^y )$}
+            \Let{$\bd$}{$\bitd$}
+            \Let{$\bd{y}$}{$\bitd{y}$}
+            \Let{$\bd{z}$}{$\bitd{z}$}
+            \Return{$\valid(\bd) \land \valid(\bd{y}) \land \valid(\bd{z})$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+The \sc{AND} constraint holds for three bit-vectors $x$, $y$, and $z$, of equal length if
+$x \land y = z$,
+the propagator for this relationship is given in Algorithm~\ref{alg:conjunction}.
+\begin{algorithm}
+    \caption{Propagator for $x \land y = z$}
+    \label{alg:conjunction}
+    \begin{algorithmic}
+        \Function{propagate}{$x \land y = z$}
+            \Let{$\up$}{$u^x \land (\lnot ((\lnot u^z) \land l^y))$}
+            \Let{$\low$}{$l^x \lor l^z$}
+            \Let{$\up{y}$}{$u^y \land (\lnot ((\lnot u^z) \land l^x))$}
+            \Let{$\low{y}$}{$l^y \lor l^z$}
+            \Let{$\up{z}$}{$u^z \land u^x \land u^y$}
+            \Let{$\low{z}$}{$l^z \lor (l^x \land l^y)$}
+            \Let{$\bd$}{$\bitd$}
+            \Let{$\bd{y}$}{$\bitd{y}$}
+            \Let{$\bd{z}$}{$\bitd{z}$}
+            \Return{$\valid(\bd) \land \valid(\bd{y}) \land \valid(\bd{z})$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+%\subsection{Structural constraints}
+%\subsection{Arithmetic constraints}
+The membership constraint, $x \in [L,U]$ holds for a bit-vector variable $x$ and integers $L$ and $U$ if $L \leq I(x) \leq U$; the propagator for the membership constraint is given in Algorithm~\ref{alg:membership}.
+\begin{algorithm}
+    \caption{Propagator for $x \in [L,U]$}
+    \label{alg:membership}
+    \begin{algorithmic}
+        \Function{propagate}{$x \in [L,U]$}
+            \Let{$i$}{$k-1$}
+            \While{$i \geq 0$}
+                \If{$I(u^x) < L \lor I(l^x) > U$}
+                    \Return \textbf{false}
+                \EndIf
+                \If{$i \in V^x$}
+                    \If{$I(u^x)-2^i < L$}
+                        \State $l_i^x = 1$
+                    \ElsIf{$I(l^x) + 2^i > U$}
+                        \State $u_i^x = 0$
+                    \Else
+                        \Break
+                    \EndIf
+                \EndIf
+                \Let{$i$}{$i-1$}
+            \EndWhile
+            \Return \textbf{true}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+The constraint $\channel(x,X)$ for a bit-vector variable $x$ and an interval variable $X$ 
+channels the domain bounds of $x$ to $X$ and vice-versa; a propagator for channeling is given in Algorithm~\ref{alg:channel}.
+\begin{algorithm}
+    \caption{Propagator for $\channel(x,X)$}
+    \label{alg:channel}
+    \begin{algorithmic}
+        \Function{propagate}{$\channel(x,X)$}
+            \If{$\lnot \propagate(X \in [I(l^x), I(u^x)])$}
+                \Return \textbf{false}
+            \EndIf
+            \If{$\lnot \propagate(x \in D^X)$}
+                \Return \textbf{false}
+            \EndIf
+            \Return $\propagate(X \in [I(l^x), I(u^x)])$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\iffalse
+They define:
+bitwise conjunction (\sc{AND})
+bitwise disjunction (\sc{OR})
+bitwise negation (\sc{NOT})
+bitwise exclusive OR (\sc{XOR})
+
+a conditional, \sc{IF}
+shifts (\sc{SHL} and \sc{SHR}), rotations (\sc{ROTL} and \sc{ROTR})
+extension (\sc{EXTU})
+extraction (\sc{EXTRACT})
+inequalities
+addition
+\fi
+
+\section{Constraint programming \& substitution boxes}
+\label{sec:cpsbox}
+Ramamoorthy et al.\ propose the application of constraint programming to S\=/box generation, 
+using the \sc{DES} design criteria as a basis for their recommended constraints~\cite{sboxes}.
+
+They represent the S-box as an array of $2^n$ decision variables, which fulfills criteria S-1.
+For criteria S-2, they introduce a series of heuristics for evaluating nonlinearity of S\=/boxes. 
+They then define additional constraints for criteria S-3--S-7. 
+For an S\=/box $S$, the decision variable corresponding to an input $x$ is denoted $S(x)$.
+
+\subsection{Criteria S-2}
+\label{sec:stwo}
+To enforce criteria S-2, the non-linearity constraint,
+Ramamoorthy et al.\ initially propose a hard constraint, $H_S$, which rejects fully-assigned S\=/boxes whose score exceeds a threshold $\tau$: $\sigma \leq \tau$
+
+They then extend the idea of a threshold to S\=/boxes which have $\phi$ or more assigned variables.
+This "incomplete, incremental heuristic," $H_I$, allows the solver to fail a space where the score of the partially-filled S\=/box, $\sigma_\phi$ (defined below), exceeds the threshold $\tau$: $\sigma_\phi \leq \tau$.
+Note that in the context of $H_I$, $\phi$ is a fixed value, so the heuristic does nothing until there are at least $\phi$ assigned variables. 
+
+Finally, they propose a "complete, incremental heuristic," $H_C$, which does not require a fixed number of assigned variables. They again use a threshold, $\tau$, while the number of currently-assigned variables is given by $\phi$:
+\[\phi - \tau - \frac{2^n}{2} \leq 
+ \max_{\alpha,\beta}\left\{\Nphi\right\} \leq 
+\frac{2^n}{2} + \tau\]
+
+This $H_C$ heuristic requires that the weakest point of the S\=/box have a count which falls within the range of the threshold. The upper bound is unchanged from $H_S$ and $H_I$, but the lower bound ensures that it is possible for the count of the partially-filled S\=/box to reach some part of the acceptable range given the remaining number of unassigned variables.
+$\Nphi$
+adds a clause to the counting of matches between $\alpha$ and $\beta$, namely that $S(x)$ must be assigned: \[
+    \Nphi
+    = 
+    \Cardinality{
+        \set{x\,\middle|\,
+            0\leq x < 2^n,\,\assigned\left(S\left(x\right)\right) \land \lin\left(x,\alpha\right) = \lin\left(S\left(x\right),\beta\right)
+        }
+    }
+\]
+
+Recall that the count, $\N$, has the range $0 \leq \N \leq 2^n$ where $n$ is the size of the S\=/box inputs. $\Nphi$ therefore has the range $0 \leq \Nphi \leq 2^{\phi}$. 
+
+The score for a partially-assigned S\=/box with $\phi$ assigned variables is then defined in terms of $\Nphi$ (omitting the linear approximation table, $LAT$): \[
+    \sigma_\phi = \max_{\alpha,\beta}\left\{
+        \abs{\Nphi - \frac{2^n}{2}}
+    \right\}
+\]
+
+As given by Ramamoorthy, $H_C$ is actually not complete; we extend the definition slightly in Section~\ref{sec:stwoupdate}.
+
+\subsection{Criteria S-3}
+\label{sec:sthree}
+Criteria S-3 requires that the set of inputs with the same first and last bits must take on distinct values. The structure of the S\=/boxes are such that this is equivalent to saying that the variables in each row must take distinct values. 
+\[
+    \forall i : 1 \leq i \leq 4 : 
+    \alldifferent(\mathit{row}_i)
+\]
+
+\subsection{Criteria S-4}
+\label{sec:sfour}
+Criteria S-4 requires that for any two inputs $x$ and $y$ which differ in exactly one bit, $S(x)$ and $S(y)$ must differ in at least two bits. The \sc{xor} ($\oplus$) operation results in a bit-vector indicating bits which differ, and the hamming weight applied to the resultant bit-vector gives a count of how many bits differ:
+\begin{align*}
+    & \forall x : 0 \leq x < 2^n :\\
+    & ~~~~ \forall y : x+1 \leq y < 2^n :\\
+    & ~~~~~~~~ \weight\left(x \oplus y\right) = 1 
+    \implies
+    \weight\left(S(x) \oplus S(y)\right) \geq 2
+\end{align*}
+
+\subsection{Criteria S-5}
+\label{sec:sfive}
+Criteria S-5 requires that for any two inputs $x$ and $y$ which differ in exactly the two middle bits, $S(x)$ and $S(y)$ must differ in at least two bits. For a \sixbyfour{} S-box, the bit-vector with the two middle bits set is $001100$ 
+\begin{align*}
+    & \forall x : 0 \leq x < 2^n :\\
+    & ~~~~ \forall y : x+1 \leq y < 2^n : \\
+    & ~~~~~~~~ (x \oplus y) = 001100
+    \implies
+    \weight(S(x) \oplus S(y)) \geq 2
+\end{align*}
+
+\subsection{Criteria S-6}
+\label{sec:ssix}
+Criteria S-6 requires that for any two $x$ and $y$ which differ in their first two bits but are the same in their last two, $S(x)$ and $S(y)$ must not be equal. 
+The \sc{xor} ($\oplus$) operation over two bit-vectors gives the bits which differ. 
+For a \sixbyfour{} S-box, applying a \sc{and} ($\land$) to 
+the result of the \sc{xor} operation 
+and the bit-vector $110011$ 
+isolates the first and last two bits; if the result is equal to $110000$ then the input bit-vectors differ in their first two bits but are equal in their last two bits.
+\begin{align*}
+    & \forall x : 0 \leq x < 2^n : \\
+    & ~~~~ \forall y : x+1 \leq y < 2^n : \\
+    & ~~~~~~~~ \left(\left(x \oplus y\right) \land 110011\right) = 110000 
+    \implies
+    S(x) \neq S(y)
+\end{align*}
+
+Ramamoorthy gives two different values for the equality, $3 \cdot 2^{n-1}$ and $3 \cdot 2^{n-2}$; it is the second of these which is correct. For a \sixbyfour{} S-box, this is equivalent to the bit-vector $110000$.
+
+\subsection{Criteria S-7}
+
+Unfortunately, it appears that Ramamoorthy et al.\ have misinterpreted the S-7 criteria. Specifically, they seem to have misinterpreted the phrase "any nonzero \ln{6}-bit difference" to mean that all six bits of inputs $x$ and $y$ must differ. A corrected constraint for S-7 is given in Section~\ref{sec:ssevenfix}.
+
+This misunderstanding invalidates the results given by Ramamoorthy et al.; 
+they claim to have found a large number of \sixbyfour{} S-boxes with score $8$, however,
+although the single instance of such a S-box given in their paper does have a score of $8$,
+it violates the corrected S-7 constraint.
+
+\section{Symmetries}
+\label{sec:symmetries}
+
+Ramamoorthy et al.\ also describe several symmetries of S-boxes and means to break these during search~\cite{sboxsymmetry}.
+Based on analysis of constraints S-4, S-5, and S-6, they identify row, column, and diagonal symmetries.
+
+The row symmetry allows the top two rows of the S-box to be exchanged so long as the bottom two are simultaneously exchanged.
+To break the row symmetry during search, the integer interpretation of the value for input $0$ is constrained 
+to be less than or equal to the integer interpretation of the value for the same position in the next row, namely input $1$:
+$I(S(0)) \leq I(S(1))$
+
+The column symmetry allows certain pairs of columns to be exchanged, as long as they are all simultaneously exchanged.
+Columns $0$ and $6$ are one such pair in a \sixbyfour{} S-box, 
+so this symmetry can be broken during search by constraining the 
+value for input $0$ (which is in column 0) to be less than or equal to the 
+value for input $12$ (which is in column $6$):
+$I(S(0)) \leq I(S(12))$
+
+The diagonal symmetry allows quadrants of the S-box to be exchanged with the quadrant diagonal from it 
+as long as all four quadrants are switched simultaneously.
+The top-left quadrant will therefore be exchanged with the lower-right quadrant;
+in a \sixbyfour{} S-box, the top-left value of the top-left quadrant is the 
+value for input $0$, while the top-left value of the bottom-right quadrant
+is the value for input $48$.
+To break the diagonal symmetry during search, 
+the integer representation of
+the value for input $0$ is constrained
+to be less than or equal to 
+the integer representation of
+the value for the input $48$:
+$I(S(0)) \leq I(S(48))$
+
+They then describe a rotational symmetry and a symmetry they call \textit{bit inversion symmetry}.
+First, they establish some properties of bit-vectors and linear approximation tables. 
+They show that the linear combination of the bitwise negation of a bit-vector $x$ and a constant bit-vector $y$ is
+\[\lin(\lnot x, y) = \lin(x,y) \oplus \parity(y)\]
+
+Changing an assignment for an input $x$ from $S(x)$ to $\lnot S(x)$ changes the entry $\mathit{LAT}(\alpha,\beta)$ by
+\[-1^{\lin(x,\alpha) \oplus \lin(\lnot S(x), \beta)} \cdot \parity(\beta) \]
+
+Swapping the assignments for the inputs $x$ and $\lnot x$
+changes the entry $\mathit{LAT}(\alpha,\beta)$ by
+\[
+    \left(
+        (-1)^{\lin(x,\alpha) \oplus \lin(\lnot S(x), \beta)} 
+        +
+        (-1)^{\lin(\lnot x,\alpha) \oplus \lin(\lnot S(\lnot x), \beta)} 
+    \right)
+    \cdot 
+    \parity(\alpha) 
+\]
+
+Using these properties, 
+they show that the score of a complete assignment remains unchanged if 
+its assigned values are replaced by the \sc{NOT} of those values;
+they call this \textit{bit inversion symmetry}.
+To break this symmetry during search, the domain of the variable for input $0$ is limited to the range $0$--$(2^{m-1}-1)$ (i.e., the most significant bit is set to $0$).
+For a \sixbyfour{} S-box, this becomes: $I(S(0)) \leq 7$
+
+They also show that the score of a complete assignment remains unchanged if 
+the assigned values are swapped between the variables $x$ and $\lnot x$;
+this is equivalent to rotating a S-box by $180^{\circ}$\negthinspace.
+To break this symmetry during search, the variable for input $0$ 
+can be constrained to be less-than or equal-to the variable for input $2^n-1$.
+For a \sixbyfour{} S-box, the 
+integer representation of the
+value for input $0$ is therefore constrained
+to be less than or equal to the 
+integer representation of the value
+value for input $63$: 
+$I(S(0)) \leq I(S(63))$
+
+\chapter{Contributions}
+\label{sec:contributions}
+In this chapter we describe several new bit-vector propagators for typical
+bit-vector operations,
+we present an addition to the $H_C$ heuristic,
+we correct the S-7 constraint presented by Ramamoorthy,
+and finally we identify two new symmetries of S-boxes.
+
+\section{Propagators}
+\label{sec:propagators}
+Most of the bit-vector propagators implemented have already been described in Section~\ref{sec:bitvectors}. Some additional propagators are necessary for working with S-boxes but are nevertheless generally useful.
+
+\subsection{Hamming weight}
+\label{sec:weightprop}
+% implemented: hamming weight
+The constraint $\weight(x) = y$ holds for a bit-vector variable $x$ and a integer variable $y$ when 
+$y$ is equal to the hamming weight of $x$; a propagation algorithm
+is given in Algorithm~\ref{alg:weight}.
+For a bit-vector variable $x$, 
+the possible hamming weights are an interval
+$\lbrack\mathit{min\_weight}, \mathit{max\_weight}\rbrack$.
+
+The minimum weight of $x$, $\mathit{min\_weight}$, 
+is the weight of the currently-fixed bits of the bit-vector variable
+if the remaining free bits are fixed to zero.
+This is exactly the same as the lower bound, $l^x$, 
+where all the free bits are represented as $0$, while
+the fixed bits have their final values, so $\mathit{min\_weight} = \weight(l^x)$.
+
+Conversely, for the maximum weight of $x$, $\mathit{max\_weight}$:
+if all of the currently-free bits are fixed to $1$, then $x$ will be exactly equal to $u^x$, and
+$\weight(x) = \weight(u^x)$, so $\mathit{max\_weight} = \weight(u^x)$.
+
+When the integer variable $y$ is exactly equal to either the minimum or maximum
+weight of the bit-vector $x$, then $x$ must be exactly $l^x$ or $u^x$, respectively.
+
+The complexity of the propagator for $\weight(x) = y$ itself is $\BigO{1}$;
+it needs only to compute the maximum and minimum weights of $x$, 
+both of which can be done in constant time for bit-vector variables less than the word length of the underlying architecture.
+In our development environment, a \ln{32}-bit Linux using \cd{gcc} 4.7.2, $\weight$ is implemented by the standard library \cd{bitset.count()}. 
+Internally, \cd{bitset} uses the \cd{gcc}-built-in function \cd{__builtin_popcount},
+which on our system compiles to a single processor instruction \cd{__popcountsi2}.
+\begin{algorithm}
+    \caption{Propagator for $\weight(x) = y$}
+    \label{alg:weight}
+    \begin{algorithmic}
+        \Function{propagate}{$\weight(x) = y$}
+            \Let{$\mathit{min\_weight}$}{$\weight(l^x)$}
+            \Let{$\mathit{max\_weight}$}{$\weight(u^x)$}
+            \If{$\lnot \propagate(y \in [min\_weight,max\_weight])$}
+                \Return \textbf{false}
+            \EndIf
+            \If{$\assigned(y)$}
+                \If{$y = \mathit{max\_weight}$}
+                    \If{$\lnot \propagate(x = u^x)$}
+                        \Return \textbf{false}
+                    \EndIf
+                \EndIf
+                \If{$y = \mathit{mix\_weight}$}
+                    \If{$\lnot \propagate(x = l^x)$}
+                        \Return \textbf{false}
+                    \EndIf
+                \EndIf
+            \EndIf
+            \Return \textbf{true}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+%The $\weight$ propagator uses the 
+%\cd{__builtin_ffs} and \cd{__builtin_fls}
+%lnot (l oplus u) \land u
+%free = V = l oplus u
+%fixed = F = not l oplus u
+
+\subsection{Parity}
+\label{sec:parityprop}
+%implemented: parity
+The constraint $\parity(x) = y$ holds for a bit-vector variable $x$ and a Boolean variable $y$ when 
+$y$ is equal to the parity of $x$. Recall that $\parity(x)$ is true (1) when the number of set bits in $x$ is odd and false (0) otherwise.
+A propagation algorithm is given in Algorithm~\ref{alg:parity}. 
+
+It is possible to fix the value of the Boolean variable $y$ only when $x$ is assigned.
+In this case, $y$ is propagated to the value $\mathit{true}$ when $\parity(x) = 1$
+and to $\mathit{false}$ when $\parity(x) = 0$.
+
+If $y$ is assigned and $x$ has only a single free bit,
+it is possible to fix this bit based on the value of $y$;
+if $y$ is equal to the parity of the bits currently set to $1$,
+then this final bit must be $0$, otherwise, this final bit must be $1$.
+The parity of the
+bits currently set to $1$ is equivalent to the parity of the lower bound of $x$, 
+$\parity(l^x)$.
+
+The propagator for $\parity(x) = y$ is $\BigO{1}$;
+it must determine if a variable is assigned,
+it must find the free bits of a bit-vector variable,
+it must calculate the weight of a bit-vector,
+and it must calculate the parity of a bit-vector.
+We have previously described that the 
+first three of these 
+can be calculated in constant time.
+
+The parity can be calculated 
+by linear scan ($\BigO{n}$ on the number of bits $n$),
+by a "bit twiddling hack"~\cite{bithacks} ($\BigO{1}$ with a look-up table),
+or by a \cd{gcc}-builtin (also $\BigO{1}$, no look-up table necessary).
+In our development environment, 
+$\parity$ 
+is implemented 
+using the \cd{gcc}-built-in function \cd{__builtin_parity},
+which compiles down to a series of 8 assembly instructions.
+%Since parity cannot be evaluated until all bits are assigned, the propagation condition for the parity propagator is \cd{PC_BIT_VAL} on the variable $x$.
+\begin{algorithm}
+    \caption{Propagator for $\parity(x) = y$}
+    \label{alg:parity}
+    \begin{algorithmic}
+        \Function{propagate}{$\parity(x) = y$}
+            \If{$\assigned(x)$}
+                \If{$\parity(x) = 1$}
+                    \If{$\lnot \propagate(y = \mathit{true})$}
+                        \Return \textbf{false}
+                    \EndIf
+                \Else
+                    \If{$\lnot \propagate(y = \mathit{false})$}
+                        \Return \textbf{false}
+                    \EndIf
+                \EndIf
+            \EndIf
+            \If{$\assigned(y) \land \lnot \assigned(x)$}
+                \If{$\weight(\free(\tuple{l^x,u^x})) = 1$}
+                    \Let{$\mathit{current\_parity}$}{$\parity(l^x)$}
+                    \If{$y = \mathit{current\_parity}$}
+                        \If{$\lnot \propagate(x = l^x)$}
+                            \Return \textbf{false}
+                        \EndIf
+                    \Else
+                        \If{$\lnot \propagate(x = u^x)$}
+                            \Return \textbf{false}
+                        \EndIf
+                    \EndIf
+                \EndIf
+            \EndIf
+            \Return \textbf{true}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Disequality}
+\label{sec:disequalprop}
+\FIXME{UGH, DUNNO ABOUT THIS; should this only propagate on VAL? Ask JP; also, can it propagate the final bit to the other bv?}
+%implemented: disequal
+The disequality constraint holds for a pair of bit-vectors, $x$ and $y$, if $x \neq y$.  
+A propagation algorithm is given in Algorithm~\ref{alg:disequal}.
+
+For the constraint $x \neq y$ to hold,
+the values of the fixed bits which are common to both bit-vectors, $\mathit{fixed\_both}$,
+must be unequal when $x$ and $y$ are both assigned.
+If the values of the common fixed bits becomes unequal at some point
+before both are assigned, the propagator may be subsumed.
+If both bit-vectors are assigned, 
+but their common bits are equal, 
+then $x = y$, so the propagator returns failure.
+
+If one bit-vector is assigned while the other has a single free bit and
+the values of the common bits are equal,
+then the value of the final bit can be determined.
+If $x$ is the assigned bit-vector, 
+then the value of $x$ for the free bit of $y$ 
+can be masked off with
+$l^x \land \free(\tuple{l^y,u^y})$.
+Inverting this value produces a mask such that 
+$u^y \land \lnot (l^x \land \free(\tuple{l^y,u^y}))$
+will be equivalent to $y$ with the final free bit 
+set to the inverse of the value of that bit in $x$.
+
+The propagator for $x \neq y$ is also $\BigO{1}$.
+The propagator must check for assignment,
+find the free and fixed bits of bit-vector variables,
+calculate their hamming weight,
+and apply bitwise operations.
+We have previously presented constant-time operations for all of these.
+%                    l^x \land \free(\tuple{l^y,u^y})
+%                    now this is 0000 or 1000 
+%                    for         x=0  or x=1
+%                    so we wabt  y=1  or y=0
+%                    
+%                    \lnot (l^x \land \free(\tuple{l^y,u^y}))
+%                    now this is 1111 or 0111
+%                    for         x=0  or x=1
+%                    so we wabt  y=1  or y=0
+%                    sow now we can do
+%                    u^y \land \lnot (l^x \land \free(\tuple{l^y,u^y}))
+%                    since this will be
+%                                1yyy or 0yyy
+\FIXME{the propagate notation for setting the bit-vector is inconsistent with the other parts}
+\begin{algorithm}
+    \caption{Propagator for $x \neq y$}
+    \label{alg:disequal}
+    \begin{algorithmic}
+        \Function{propagate}{$x \neq y$}
+            \Let{$\mathit{fixed\_both}$}{$\fixed(l^x,u^x) \land \fixed(l^y,u^y)$}
+            \If{$(l^x \land \mathit{fixed\_both}) \neq (l^y \land \mathit{fixed\_both})$}
+                \Return \textbf{true}
+            \EndIf
+            \If{$\assigned(x) \land \assigned(y)$}
+                \Return \textbf{false}
+            \EndIf
+            \If{$(\assigned(x) \land \lnot \assigned(y)) \lor (\lnot \assigned(x) \land \assigned(y))$}
+                \Let{$\mathit{free\_y}$}{$\free(\tuple{l^y,u^y})$}
+                \If{$\assigned(x) \land \weight(\mathit{free\_y}) = 1$}
+                    \If{$\lnot \propagate(y = u^y \land \lnot (l^x \land \mathit{free\_y}))$}
+                        \Return \textbf{false}
+                    \EndIf
+                \EndIf
+                \Let{$\mathit{free\_x}$}{$\free(\tuple{l^x,u^x})$}
+                \If{$\assigned(y) \land \weight(\mathit{free\_x}) = 1$}
+                    \If{$\lnot \propagate(x = u^x \land \lnot (l^y \land \mathit{free\_x}))$}
+                        \Return \textbf{false}
+                    \EndIf
+                \EndIf
+            \EndIf
+            \Return \textbf{true}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\section{An extension to $H_C$}
+\label{sec:stwoupdate}
+The goal of the $H_C$ heuristic, described in Section~\ref{sec:stwo},
+is to ensure that the overall score of the S\=/box is less than $\tau$, but Ramamoorthy only 
+defines $H_C$ in terms of the maximum of $\Nphi$, omitting the minimum value, which can also
+be the cause of a high (bad) score. 
+We therefore also define a lower bound which ensures that given $\phi$ assigned variables, 
+it is possible for the minimum value of $\Nphi$ to reach the acceptable range once all values become assigned:
+\[\min_{\alpha,\beta}\left\{\Nphi\right\} \geq \frac{2^{n}}{2} - \tau - (2^n - \phi)\]
+
+Since $\min_{\alpha,\beta}\left\{\Nphi\right\} \leq \max_{\alpha,\beta}\left\{\Nphi\right\}$, 
+the lower bound in Ramamoorthy's version of $H_C$ can be omitted, and the remaining test is:
+\[\max_{\alpha,\beta}\left\{\Nphi\right\} \leq \frac{2^n}{2} + \tau\]
+
+This altered definition of $H_C$ is incorporated into the implementations of S-2 given in Section~\ref{sec:bitvecmodels}.
+
+\section{Corrected S-7 constraint}
+\label{sec:ssevenfix}
+The S-7 criteria requires that for each group of input pairs whose difference is the same (and non-zero), at most eight pairs can have the same output difference. In the criteria, this is described as "any nonzero \ln{6}-bit difference", which Ramamoorthy et al.\ appear to have misinterpreted as meaning that all six bits of inputs $x$ and $y$ must differ rather than as a simple description of the length of the difference bit-vector.
+
+A corrected constraint for S-7 for an input \sc{XOR} $i$ and an output \sc{XOR} $o$:
+\begin{align*}
+    & \forall i : 1 \leq i < 2^n : \\
+    & ~~~~ \forall o : 0 \leq o < 2^m : \\
+    & ~~~~~~~~ %\mathit{PXDT}\left(i, o\right) = 
+    8 \geq
+    \Cardinality{
+        \set{
+            \tuple{x,y}
+            \suchthat
+            0 \leq x < y < 2^n,
+            %0 \leq x < 2^n,
+            %0 \leq y < 2^n,
+            % x \neq y \land % this is not necessary since x xor x == 0 which is not in the range of i
+            x \oplus y = i \land
+            S(x) \oplus S(y) = o
+        }
+    } 
+\end{align*}
+Biham and Shamir collect the counts for each difference in a table called the \textit{pairs \sc{xor} distribution table}.
+They use ordered pairs instead of unordered pairs as given here; the \sc{DES} threshold would need to be increased to 16 if applied to their counts~\cite{biham}.
+
+\section{Reflective symmetry}
+\label{sec:symmetryreflection}
+\input{symmetry.tex}
+
+\chapter{Bit-vector implementation}
+\label{sec:implementation}
+
+The implementation of variables for Gecode 
+consists of defining \textit{variable implementations}, \textit{variables} and \textit{variable arrays}, \textit{variable views}, \textit{propagators}, and \textit{branchings}. This process is covered extensively by 
+\textit{Modelling and Programming with Gecode}, section V: \textit{Programming Variables}~\cite{MPG:V}. 
+
+Variable implementations are the objects which actually store the variable domains and which implement the operations which manipulate the domain.
+Variables are read-only interfaces to variable implementations that enable multiple variables to refer to the same implementation.
+Variable arrays are just arrays of variables. 
+Variable views allow Gecode to decouple variable implementations from propagator implementations.
+Propagators are the implementations of constraints for a given variable type.
+Branchings consist of variable and value selection functions which 
+choose variables on which to branch 
+and which value to fix for each branch of the search tree.
+
+Presented below are the implementation details for each of these components for the bit-vector variables and propagators implemented by this thesis. 
+
+\section{Variable implementations}
+\begin{table}[t]
+    \small
+    \begin{tabularx}{\linewidth}{ r X }
+        \bh{modification event} & \bh{description} \\
+        \cd{ME_BIT_NONE}	&	no change to the variable domain\\
+        \cd{ME_BIT_FAILED}	&	the variable domain is failed\\
+        \cd{ME_BIT_VAL}	&	the variable has become assigned\\
+        \cd{ME_BIT_LOWER}	&	the lower bound of the variable domain has changed\\
+        \cd{ME_BIT_UPPER}	&	the upper bound of the variable domain has changed\\
+        \cd{ME_BIT_BND}	&	both the upper and lower bounds have changed\\
+    \end{tabularx}
+    \caption{Bit-vector modification events}
+    \label{tab:me}
+\end{table}
+%\nopagebreak[4]
+The domain of the bit-vector variable implementation is defined by a pair of bit-vectors, $\tuple{l,u}$, as described in Section~\ref{sec:bitvectors}. These upper and lower bounds of the bit-vector variables are represented as \cd{unsigned int}s (which is typically the same as a machine's word size)~\cite{nyhoff2012programming}. The variable implementation also contains an \cd{unsigned int} $n$, the number of bits to use for the variable, and a bit-mask $m$ which masks the lower $n$ bits.
+
+A new variable type must be compiled into Gecode by way of a \textit{variable implementation specification} file which defines the variable name, its \C++ namespace, the possible modification events, and the possible propagation conditions. 
+
+Modification events describe how the domain of a view has changed.
+All variable implementations must provide modification events 
+for \cd{NONE}, \cd{FAILED}, and \cd{ASSIGNED}.
+We define these modification events and the additional events 
+for when the the lower and upper bounds of a variable's domain change (\cd{LOWER} and \cd{UPPER})
+or when both change (\cd{BND}).
+All modification events are 
+listed in Table~\ref{tab:me}.
+
+Propagation conditions describe when a propagator is scheduled depending on 
+how the views to which it is subscribed are modified.
+All variable implementations must provide propagation conditions for \cd{NONE} and 
+\cd{ASSIGNED} (aliased to \cd{VAL}).
+We additionally define propagation conditions for when a view 
+changes its upper, lower, or both bounds (\cd{UPPER}, \cd{LOWER}, \cd{BND}),
+summarized in Table~\ref{tab:pc}.
+
+Variable implementations must implement an \cd{assigned} function, which returns \cd{true} when the implementation becomes assigned; in the case of bit-vectors, this is when \cd{l == u}. 
+
+The implementation must also provide \cd{subscribe} and \cd{cancel} functions which are used by propagators to be notified upon certain propagation conditions, 
+functions for copying the variable during search,
+and
+access operations to the relevant member variables, 
+for bit-vectors these are \cd{lower} and \cd{upper} for the variable bounds, 
+\cd{num_bits} for the number of bits $n$ and \cd{mask} for the mask of the lower $n$ bits.
+
+Finally, the implementation must provide some way of modifying the variable domain and ensure that these modification operations return the correct modification events. 
+For bit-vectors, these are \cd{lower} and \cd{upper} which set the lower or upper bound to a passed value, and \cd{bounds}, which sets both the lower and upper bounds simultaneously.
+
+Gecode supports a construct called an advisor which is used to improve
+incremental propagation; these in turn use \textit{deltas} to communicate
+changes in variable domains.
+The bit-vector variable implementation 
+does not support this feature and therefore
+does not provide deltas to be used by advisors; 
+it indicates this by the \cd{GECODE_NEVER} macro in the relevant functions.
+
+\section{Variables \& variable arrays}
+Variables are read-only interfaces to variable implementations, where each implementation can be referred to by an arbitrary number of variables~\cite{MPG:V}. The code to be written for a variable is minimal and consists of a few constructors and a pair of access operations which pass directly through to the variable implementation, \cd{lower} and \cd{upper}. 
+
+The code for variable arrays is similarly simple; the constructors simply initialize the relevant number of variables.
+
+\begin{table}[t]
+    \small
+    \begin{tabularx}{\linewidth}{ r X }
+        \bh{propagation condition} & \bh{description} \\
+        \cd{PC_BIT_NONE}	&	the propagator will not create any subscriptions\\
+        \cd{PC_BIT_VAL}	&	will schedule a propagator when a subscribed \\
+                        &   variable is assigned\\
+        \cd{PC_BIT_LOWER}	&	will schedule a propagator when a subscribed \\ 
+                            &   variable's lower bound is altered\\
+        \cd{PC_BIT_UPPER}	&	will schedule a propagator when a subscribed \\
+                            &   variable's upper bound is altered\\
+        \cd{PC_BIT_BND}	&	will schedule a propagator when a subscribed \\
+                        &   variable's upper or lower bound is altered\\
+    \end{tabularx}
+    \caption{Bit-vector propagation conditions}
+    \label{tab:pc}
+\end{table}
+\section{Variable views}
+Variable views are used by Gecode to decouple the variable implementations from propagator implementation.
+Each view implements the same operations as a variable.
+Gecode supports \textit{variable implementation views} which 
+maintain a reference to a variable and directly invoke operations on the backing variable,
+\textit{constant views} where the view behaves as a variable equal to some constant $c$ without the need for a backing variable,
+and 
+\textit{derived views} which reference another view instead of a variable~\cite{MPG:P}.
+Propagators can then be implemented generically to operate on these views~\cite{views}.
+
+\textit{Modelling and programming with Gecode} gives examples of some possible derived views for integer variables:
+an \textit{offset view}, which adds a constant factor $c$ and
+a \textit{scale view}, which scales the variable value by a constant $a$~\cite{MPG:V}.
+
+We implement a variable implementation view and a constant view for bit-vectors.
+
+\section{Propagators}
+The code necessary to implement the \cd{propagate} function in Gecode can be very similar to the 
+pseudocode defined in Sections~\ref{sec:bitvectors} and~\ref{sec:propagators}.
+The \cd{propagate} function for the \sc{XOR} propagator implementation is given in Listing~\ref{lst:xorcode} 
+and an altered version of the \sc{XOR} propagator which corresponds closely to the Gecode implementation is given in Algorithm~\ref{alg:xorforgecode}.
+For example, lines 11--12~in Listing~\ref{lst:xorcode} correspond to lines 2--3 in Algorithm~\ref{alg:xorforgecode}, while line 13 corresponds with lines 4--5.
+%\newpage
+\lstinputlisting[
+    float=h,
+    language=C++,
+    label=lst:xorcode,
+    caption=\sc{XOR} propagate function,
+    numbers=left,
+    numbersep=5pt,
+    xleftmargin=20pt,
+    frame=tb,
+    framexleftmargin=20pt,
+    basicstyle=\small\fontfamily{dejavu}\selectfont\ttfamily,
+    keywordstyle=\bfseries
+]{xorprop.cpp}
+\begin{algorithm}
+    \caption{Altered propagator for $x \oplus y = z$}
+    \label{alg:xorforgecode}
+    \begin{algorithmic}[1]
+        \input{xoralg.tex}
+    \end{algorithmic}
+\end{algorithm}
+\section{Branchings}
+The implementation of branchings in Gecode requires 
+\textit{variable selection} and \textit{value selection} functions,
+a default \textit{merit} function, 
+and a \textit{branch commit} function~\cite{MPG:V}.
+The bit-vector implementation provides a number of variable-value branchings.
+
+Variable selection functions
+operate on a number of decision variables and 
+choose best suited variable 
+on which to branch
+based on the given selection strategy.
+For bit-vector variables, 
+the possible variable selection functions are given in Table~\ref{tab:varsel}.
+The variable selection code itself is mostly boilerplate, 
+which uses Gecode \cd{ViewSel} classes to do the actual variable selection.
+
+The variable selection functions involving the merit
+make use of a merit function.
+By default,
+the bit-vector merit function returns the number of free bits.
+This function can be overridden by a user-defined function, 
+which allows for custom variable selection.
+%\begin{samepage}
+    \begin{table}[H]
+        \small
+        \begin{tabularx}{\linewidth}{ r X }
+            \bh{variable selection} & \bh{select\ldots} \\
+            \cd{BIT_VAR_NONE}	&	the first unassigned variable \\
+            \cd{BIT_VAR_RND}	&	a random variable \\
+            \cd{BIT_VAR_SIZE_MIN}	&	 the variable with the smallest domain size \\
+            \cd{BIT_VAR_MERIT_MAX}	&	the variable with highest merit as defined by \cd{merit} \\
+            \cd{BIT_VAR_DEGREE_MAX}	&	the variable on which most propagators depend \\
+            \cd{BIT_VAR_ACTIVITY_MAX}	&	the variable which has been involved in most constraint propagation \\
+        \end{tabularx}
+        \caption{Bit-vector branching variable selection}
+        \label{tab:varsel}
+    \end{table}
+    \begin{table}[H]
+        \small
+        \begin{tabularx}{\linewidth}{ r X }
+            \bh{value selection} & \bh{select\ldots} \\
+            \cd{BIT_VAL_MIN_BIT}	&	the least-significant free bit \\
+            \cd{BIT_VAL_MAX_BIT}	&	the most significant free bit \\
+            \cd{BIT_VAL_RND_BIT}	&	a random free bit \\
+            \cd{BIT_VAL}	&	user-defined value selection \\
+        \end{tabularx}
+        \caption{Bit-vector branching value selection}
+        \label{tab:valsel}
+    \end{table}
+%\end{samepage}
+
+Value selection functions
+operate on the selected variable and choose a 
+value in the domain of this variable on which to branch.
+In the case of bit-vectors, the function chooses a single
+bit according to the chosen strategy.
+The defined value selection functions are given in Table~\ref{tab:valsel}.
+The value selection functions require 
+\textit{find first set bit} and \textit{find last set bit} functions in order
+to find a bit to select. 
+Our implementation uses the 
+\cd{gcc} built-in functions
+\cd{__builtin_ffs} (find first set) and \cd{__builtin_clz} (count leading zeros),
+which internally use the \cd{bsfl} (bit scan forward) and \cd{bsrl} (bit scan reverse)
+instructions~\cite{intelffs}.
+These run in constant time, which allows our 
+selection functions to run in constant time.
+
+Finally, branch commit function 
+branches on the chosen variable and value. 
+For bit-vectors, 
+the default branch commit function first fixes the selected bit to $1$, then fixes the selected bit to $0$.
+
+\chapter{Bit-vector S-Box models}
+\label{sec:bitvecmodels}
+
+In this chapter, we present several model variants for enforcing the \sc{DES} design criteria for S-boxes using bit-vector variables.
+Later, in Chapter~\ref{sec:altmodels}, two alternative models are presented; one using set variables and another using Boolean variables.
+
+\section{Variable choice}
+All bit-vector-based models represent the problem as an array of $2^n$ bit-vector variables which have $m$ "active" bits. 
+Criteria S-1 is fulfilled by this choice of variables.
+%The array of variables is written, as before, as $S$. Because $S$ can also be seen as a mapping function, we denote a look-up of an input variable $x$ in $S$ as $S(x)$.
+
+\section{Channeling}
+All bit-vector models channel their variables to an integer variable representation in order to take advantage
+of the built-in Gecode implementation of $\alldifferent$ and in some cases $\funccount$.
+The channeled representation is an array of $2^n$ integer variables.
+
+The channeling constraint for bit-vectors is as presented in Algorithm~\ref{alg:channel}. 
+For some bit-vector models, the integer representations are used in S-2, the non-linearity constraint. 
+All bit-vector models use integer representations in S-3.
+
+\section{Criteria S-2}
+Criteria S-2, the non-linearity constraint, is enforced by some variant of the $H_C$ heuristic presented in Section~\ref{sec:stwo}.
+This constraint can either be expressed as a global constraint or series of more basic constraints.
+
+\subsection{"Decomposed" bit-vector S-2}
+The $H_C$ heuristic can be expressed as a set of constraints as presented in Algorithm~\ref{alg:decomp}. 
+
+For each combination of $\alpha$ and $\beta$
+and every S-box input $x$,
+an entry in the array $\mathit{Nab}$ of Boolean variables is constrained
+to be true when the linear combination of $x$ and $\alpha$
+equals the linear combination of $S(x)$ and $\beta$.
+An integer variable in the array $N$ is then constrained to be the 
+sum of $\mathit{Nab}$ for the given $\alpha$ and output bit $i$.
+Finally, the $\max$ and $\min$ of $N$ are constrained to be within the 
+acceptable range given the threshold $\tau$.
+\begin{algorithm}
+    \caption{Model for the S-2 non-linearity constraint}
+    \label{alg:decomp}
+    \begin{algorithmic}
+        \For{$1 \leq \alpha < 2^n$}
+            \For{$0 \leq i < m$}% i? maybe not the best choice
+                \Let{$\beta$}{$2^i$}
+                \For{$0 \leq x < 2^n$}
+                    \Equivalent{$\mathit{Nab}[\alpha][i][x]$}{$(\parity(x \land \alpha) \Leftrightarrow \parity(S(x) \land \beta))$}
+                \EndFor
+                \Equivalent{$N[\alpha-1][i]$}{$\funcsum(Nab[\alpha][i])$}
+            \EndFor
+        \EndFor
+        \State{$\sfrac{2^n}{2} + \tau \geq \max(N)$}
+        \State{$\sfrac{2^n}{2} - \tau \leq \min(N)$}
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Global integer \& bit-vector S-2}
+\label{sec:globalstwo}
+A global propagator for the S-2 non-linearity constraint is given in Algorithm~\ref{alg:nonlinear}. 
+We implement two variants of $\nonlinear$; one which operates
+on integer variables and one which operates directly on bit-vector variables.
+
+For all assigned variables, and for all potential combinations of $\alpha$ and $\beta$, 
+the propagator increments $\N$ when the linear combination of the 
+current input, $x$, and $\alpha$ is equal to the linear combination 
+of the current variable, $S(x)$, and $\beta$.
+The propagator keeps a count of the number of assigned variables, $\mathit{assigned\_count}$, and
+calculates the $\max$ and $\min$ of $\N$. 
+If the maximum or minimum values are not within the acceptable range, given the threshold $\tau$
+and $\mathit{assigned\_count}$,
+then the propagator reports failure.
+
+The advantage of using a global propagator in this case is a much reduced 
+number of variables to which changes must be propagated.
+The implementation of this propagator additionally keeps track of 
+which variables have been assigned and incrementally updates $\N$ 
+in order to improve execution time, rather than completely 
+recalculating $\N$ on each run.
+\begin{algorithm}
+    \caption{Global propagator for $\nonlinear(S, \tau)$}
+    \label{alg:nonlinear}
+    \begin{algorithmic}
+        \Function{propagate}{$\nonlinear(S,\tau)$}
+            %\Let{$N$}
+            \For{$1 \leq \alpha < 2^n$}
+                \For{$0 \leq i < m$}% i? maybe not the best choice
+                    \Let{$\beta$}{$2^i$}
+                    \Let{$\N$}{$0$}
+                \EndFor
+            \EndFor
+            \Let{$\mathit{assigned\_count}$}{$0$}
+            \For{$0 \leq x < 2^n$}
+                \If{$\assigned(S(x))$}
+                    \Let{$\mathit{assigned\_count}$}{$\mathit{assigned\_count} + 1$}
+                    \For{$1 \leq \alpha < 2^n$}
+                        \For{$0 \leq i < m$}% i? maybe not the best choice
+                            \Let{$\beta$}{$2^i$}
+                            \If{$\parity(x \land \alpha) = \parity(S(x) \land \beta)$}
+                                \Let{$\N$}{$\N + 1$}
+                            \EndIf
+                        \EndFor
+                    \EndFor
+                \EndIf
+            \EndFor
+            \Let{$\mathit{max}$}{$\max\limits_{\alpha,\beta}\left\{\N\right\}$}
+            \Let{$\mathit{min}$}{$\min\limits_{\alpha,\beta}\left\{\N\right\}$}
+            %\Let{$\mathit{max\_lower}$}{$\mathit{assigned\_count} - \tau - \sfrac{2^n}{2}$}
+            %\Let{$\mathit{max\_upper}$}{$\sfrac{2^n}{2} + \tau$}
+            %\Let{$\mathit{min\_lower}$}{$\sfrac{2^n}{2} - \tau - (2^n - \mathit{assigned\_count})$}
+            %\If{$\lnot (\mathit{max} \geq \mathit{max\_lower} \land \mathit{max} \leq \mathit{max\_upper} \land min \geq \mathit{min\_lower})$}
+            \If{$\lnot (\sfrac{2^n}{2} + \tau \geq \mathit{max} \land \mathit{min} \geq \sfrac{2^n}{2} - \tau - (2^n - \mathit{assigned\_count}))$}
+                \Return \textbf{false}
+            \EndIf
+            \Return \textbf{true}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\section{Criteria S-3}
+\label{sec:bitmodelsthree}
+Criteria S-3 requires that each possible value $0$--$(2^m-1)$ occur at least once; this
+is enforced by an $\alldifferent$ constraint on the channelled integer variables 
+as described in Section~\ref{sec:sthree}.
+
+\section{Criteria S-4, S-5, and S-6}
+\label{sec:models4}
+Criteria S-4, S-5, and S-6 are implemented 
+as described in sections~\ref{sec:sfour}, \ref{sec:sfive}, and \ref{sec:ssix}.
+These use the bit-vector propagators for $\weight$, $\xor$ and $\disequal$
+as described in Section~\ref{sec:bitvectors} and Section~\ref{sec:propagators}.
+
+\section{Criteria S-7}
+Criteria S-7, described in Section~\ref{sec:ssevenfix},
+is expressed either as a global constraint 
+or as a "decomposed" series of basic constraints.
+The criteria specifies $\mathit{max\_count}$ to be $8$ for a \sixbyfour{} S-box.
+
+\subsection{"Decomposed" bit-vector S-7}
+\label{sec:bitvecssevendecomp}
+The S-7 criteria can be expressed as a series of constraints as presented in
+Algorithm~\ref{alg:ssevenmodel}. 
+For each input difference, $i$, each pair of inputs $j$ and $k$ are found which 
+result in this difference. Because we are using a $\mathit{max\_count}$ for 
+unordered pairs, we ensure that $j < k$ to avoid duplicates. 
+The output difference $S(j) \oplus S(k)$ is channeled to an integer representation.
+Once all input pairs for this input difference are found, 
+a global cardinality constraint (built-in to Gecode as $\funccount$)
+constrains the variable at index $\mathit{idx}$ of 
+the integer variable array $\mathit{counts}$ to be equal 
+to the number of occurrences of the value $\mathit{idx}$ 
+in $\mathit{xorintvals}[i]$.
+Finally, these counts are constrained to be less than or equal to
+$\mathit{max\_count}$.
+\begin{algorithm}
+    \caption{Model for the S-7 constraint}
+    \label{alg:ssevenmodel}
+    \begin{algorithmic}
+        \For{$1 \leq i < 2^n$}
+            \Let{$\mathit{cur}$}{$0$}
+            \For{$0 \leq j < 2^n$}
+                \Let{$k$}{$i \oplus j$}
+                \If{$j < k$}
+                    \Equivalent{$\mathit{xorintvals}[i][cur]$}{$\channel(S(j) \oplus S(k))$}
+                    \Let{$\mathit{cur}$}{$\mathit{cur} + 1$}
+                \EndIf
+            \EndFor
+            \Equivalent{$\mathit{counts}$}{$\funccount(\mathit{xorintvals}[i])$}
+            \State{$\mathit{counts} \leq \mathit{max\_count}$}
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Global bit-vector S-7}
+We also implement a global propagator for criteria S-7, as given in Algorithm~\ref{alg:sseven},
+called $\xordist$ in reference to the pairs \sc{xor} distribution table mentioned in Section~\ref{sec:ssevenfix}.
+The propagator operates on a slightly different principle than the model presented 
+in the previous section. Instead of starting with an input difference $i$, it
+iterates over all inputs $x$, and all inputs $y$ such that $x < y$, making ordered
+pairs of inputs $\tuple{x,y}$ with the input difference $x \oplus y$.
+The count in the table $T$ for the
+output difference for these inputs $S(x) \oplus S(y)$
+is then incremented.
+If at any point the count exceeds the $\mathit{max\_count}$, the propagator
+reports failure.
+
+Like the global $\nonlinear$ constraint presented in~\ref{sec:globalstwo}, the global
+$\xordist$ reduces the number of variables to which changes must be propagated to
+achieve the same constraint, and like $\nonlinear$, $\xordist$ also incrementally 
+updates $T$ in order to improve execution time.
+\begin{algorithm}
+    \caption{Global propagator for criteria S-7}
+    \label{alg:sseven}
+    \begin{algorithmic}
+        \Function{propagate}{$\xordist(S,\mathit{max\_count})$}
+            \For{$0 \leq x < 2^n$}
+                \If{$\assigned(S(x))$}
+                    \For{$x < y < 2^n$}
+                        \If{$\assigned(S(y))$}
+                            \Let{$T[x \oplus y][S(x) \oplus S(y)]$}{$T[x \oplus y][S(x) \oplus S(y)] + 1$}
+                            \If{$T[x \oplus y][S(x) \oplus S(y)] > \mathit{max\_count}$}
+                                \Return \textbf{false}
+                            \EndIf
+                        \EndIf
+                    \EndFor
+                \EndIf
+            \EndFor
+        \Return \textbf{true}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\section{Models}
+Four bit-vector model variants are constructed:
+\begin{itemize}
+    \item A bit-vector model using the "decomposed" S-2 and S-7 constraints
+    \item A bit-vector model using the global integer S-2 propagator and the "decomposed" S-7 constraint
+    \item A bit-vector model using the global bit-vector S-2 propagator and the "decomposed" S-7 constraint
+    \item A bit-vector model using both the global bit-vector S-2 propagator and the global S-7 propagator
+\end{itemize}
+
+\chapter{Alternative S-Box models}
+\label{sec:altmodels}
+This chapter details two alternative S-box models using set variables and Boolean variables
+to represent the S-box's constituent bit-vectors.
+
+\section{Set model}
+\label{sec:setmodel}
+The set-based model represents an S-box as an array of $2^n$ set variables, 
+each of which can contain values from $0$ to $m$; 
+if a value $k$ is present in a set, it indicates that bit $k$ is set to $1$,
+otherwise the bit is set to $0$.
+
+\subsection{Channeling}
+Set variables are channeled to integer representation.
+The channeling is achieved by using the Gecode-provided $\weights$ constraint, which gives a weight to each possible set element and constrains an integer variable to be the sum of the weights for the elements present in the set.
+
+\subsection{Bitwise operations}
+\label{sec:setbitwise}
+For the set model, the built-in set operations described in
+\textit{Modelling and Programming with Gecode}~\cite{MPG:M} 
+%, section M: \textit{Modelling}~\cite{MPG:V}. 
+are used to implement "bitwise" operations on sets representing "on" bits. 
+The bitwise \sc{xor} ($\oplus$) operation over two variables $p$ and $q$, $p \oplus q$, 
+is equivalent to $(p \lor q) \land \lnot(p \land q)$. 
+For the representation described here, the set union ($\cup$) is equivalent to $\lor$, 
+the set intersection ($\cap$) is equivalent to $\land$, 
+and the set complement ($S^C$ for a set $S$) is equivalent to $\lnot$. 
+Thus, bitwise $\oplus$ is implemented for two sets $p$ and $q$ as
+$(p \cup q) \cap (p \cap q)^C$.
+Set cardinality is here equivalent to the hamming weight described in Section~\ref{sec:hamming}.
+
+\subsection{Criteria S-2}
+The non-linearity criteria S-2 uses the channeled integer representations 
+and the global integer S-2 described in Section~\ref{sec:globalstwo}.
+
+\subsection{Criteria S-3}
+This criteria is implemented in exactly the same way as for the bit-vector models,
+as described in Section~\ref{sec:bitmodelsthree}.
+
+\subsection{Criteria S-4, S-5, and S-6}
+As with S-3, the set model variants of S-4, S-5, and S-6 correspond with the bit-vector models. 
+The set model uses the set-based interpretation of bitwise operations described in 
+section~\ref{sec:setbitwise}.
+
+\subsection{Criteria S-7}
+The set-based implementation of criteria S-7 corresponds with the "decomposed" bit-vector S-7
+implementation presented in Section~\ref{sec:bitvecssevendecomp}, but with
+the set-based interpretation of bitwise operations described in
+section~\ref{sec:setbitwise}.
+
+\subsection{Comparison}
+The set-based model builds on existing variable implementations, which have the potential
+to be more thoroughly optimized than our bit-vector variable implementation.
+However, this set-based model also requires some acrobatics to express bitwise operations
+which can result in a significant number of auxiliary variables.
+
+\section{Boolean model}
+\label{sec:boolmodel}
+The Boolean-based model represents an S-box as an array of $2^n$ arrays of $2^m$ Boolean variables,
+where each array represents a bit-vector and
+variable in the array represents a single bit.
+
+\subsection{Channeling}
+\label{sec:boolchanneling}
+Each Boolean array representing a bit-vector is channeled to a single integer variable
+using the built-in Gecode integer $\lin$ constraint. 
+For a Boolean array, the $\lin$ constraint interprets each true value as $1$ and each
+false value as $0$ and 
+constrains an integer variable to 
+be the linear combination of the array and a set of weights.
+The weights in this case are $2^k$ for each possible bit $k$, $0 \leq k < m$.
+Note that this is not the same as the bit-vector $\lin$ operation described in Section~\ref{sec:linear}.
+
+\subsection{Bitwise operations}
+\label{sec:boolbitwise}
+Bitwise operations are more easily represented with arrays of Boolean variables than with sets; 
+for each index $i$ in a pair of Boolean arrays, $p$ and $q$,
+the Boolean operation can be directly applied to the corresponding indices.
+For example, performing $o = p \oplus q$ is just $\forall i : 0 \leq i < m : o[i] \Leftrightarrow p[i] \oplus q[i]$.
+
+\subsection{Criteria S-2}
+For the Boolean model, the non-linearity criteria S-2 uses the channeled integer representations 
+and the global integer S-2 described in Section~\ref{sec:globalstwo}.
+
+\subsection{Criteria S-3}
+For the Boolean model, criteria S-3 is implemented in exactly the same way as for the 
+bit-vector models, as described in Section~\ref{sec:bitmodelsthree}.
+
+\subsection{Criteria S-4, S-5, and S-6}
+As with S-3, the Boolean model variants of S-4, S-5, and S-7 correspond with the bit-vector models. 
+The Boolean model uses the Boolean bitwise operations described in Section~\ref{sec:boolbitwise}.
+
+\subsection{Criteria S-7}
+The Boolean implementation of criteria S-7 corresponds with the "decomposed" bit-vector S-7
+implementation presented in Section~\ref{sec:bitvecssevendecomp}, but with
+the Boolean bitwise operations described in
+section~\ref{sec:boolbitwise} and channeling to integer variables as 
+described in Section~\ref{sec:boolchanneling}.
+
+\subsection{Comparison}
+Like the set-based model, the Boolean model builds on existing variable implementations,
+which may be better optimized than our bit-vector variable implementation.
+The Boolean model requires more variables than the set-based model, 
+but uses fewer interim steps to perform the bitwise operations.
+Internally, Gecode uses integer variables to represent Boolean variables,
+which will not be as memory-efficient when compared with bit-vector variables.
+
+\chapter{Evaluation}
+\label{sec:results}
+
+This chapter describes the set-up and results of benchmarking run on the 
+set, Boolean and four different bit-vector models.
+
+\section{Setup}
+
+In order to ensure that a solution exists, one of the \sc{DES}-defined 
+S\=/boxes was chosen as a basis for the search space. 
+
+For all models, we use all symmetry breaking constraints as defined in
+Sections~\ref{sec:symmetries} and~\ref{sec:symmetryreflection}.
+However, no S\=/box defined by \sc{DES} fulfills all of the defined symmetries,
+so we transform the chosen S\=/box into one which fulfills these symmetries
+by inverting bits, transposing rows, rotating the S-box, etc., as appropriate.
+
+A set of randomly-chosen values are then removed from the S\=/box and the 
+time necessary to find the specific S\=/box solution
+is measured for 25 runs.
+These values are selected randomly for each run but the same values are used 
+for for all model implementations.
+
+Four variable selection methods were evaluated: \cd{NONE} (choose first unassigned variable), \cd{DEGREE_MAX} (choose the variable involved in most constraints), \cd{ACTIVITY_MAX} (choose the variable with most activity), and \cd{RND} (choose a random variable).
+
+For the bit-vector and set models, the variable selection targets an entire bit-vector. 
+In the Boolean model, in contrast, the variable selection targets individual bits.
+
+For bit-vector models, value selection was \cd{BIT_VAL_RND_BIT}, which first fixes a randomly-chosen bit to 1, then to 0.
+Value selection for the set-based model was \cd{SET_VAL_RND_INC}, which includes a random element in the set; this is equivalent to setting a random bit to 1. 
+For the Boolean-based model, the value selection was \cd{INT_VAL_MAX()}, which first fixes the chosen bit to 1, then to 0.
+\begin{table}[H]
+    \centering
+    \sffamily
+    \robustify\bfseries% fix bfseries with siunitx
+    \setlength{\tabcolsep}{4pt}
+    \small
+    %\scalebox{0.7}{\input{results-tables.tex}}
+    \input{results-tables-1.tex}
+    \caption[Experimental results]{
+        Average execution time in seconds, total number of timeouts, average nodes over 25 runs.
+        Boldface values are the best time for the given number of values to find, $n$.}
+    \label{tab:resultsall}
+\end{table}
+Each combination of model, variable selection, and $n$, the number of elements to remove from the chosen S\=/box, 
+%$n \in \set{4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64}$,
+$n \in \set{4,8,12,\ldots,64}$,
+is tested for 25 runs.
+The threshold for the nonlinearity criteria is set to 14 to match the score of $S_3$, the selected S\=/box.
+
+A timeout of $30$ seconds was used. 
+If a model timed out less than 3 times, we report the number of timeouts and its average time and nodes for the remaining runs. 
+Once a model times out 3 times for a given $n$, we abort execution for the remaining $n$.
+
+Tests were performed under Debian Linux on a virtual private server with an emulated CPU (AuthenticAMD, QEMU Virtual CPU version 0.12.5, 1909.490 MHz, 512 KB cache) and 500 MB of RAM. The \sc{DES} S\=/boxes are \sixbyfour{} substitution boxes, meaning they consist of 64 \ln{4}-bit variables.
+\newpage
+%\newpage
+%~\newline
+%\newpage
+\begin{table}[H]
+    \centering
+    \sffamily
+    \robustify\bfseries% fix bfseries with siunitx
+    \setlength{\tabcolsep}{4pt}
+    \small
+    \input{results-tables-2.tex}
+\end{table}
+\newpage
+
+\section{Results}
+The average execution time, number of timeouts, and average number of nodes are presented
+in Table~\ref{tab:resultsall}. The best times for a given $n$ are shown in bold.
+
+The \cd{RND} value selection performed poorly for all models.
+Figure~\ref{fig:rndrnd} graphs the results of each model for \cd{RND} value selection
+and shows the relative advantage of the bit-vector model with 
+the bit-vector S-2 and S-7 propagators.
+The bit-vector model using the decomposed S-2 and S-7 constraints, 
+performed the worst, though only slightly worse than
+the set-based model.
+Presumably, \cd{RND} performed poorly because many of the propagators require 
+variables to become assigned before they execute and selecting random variables
+delays this process.
+
+The \cd{DEGREE} value selection also performed poorly.
+The results for each model and \cd{DEGREE} value selection are
+graphed in Figure~\ref{fig:degreernd}, 
+where it can be seen that the only 
+successful case is the Boolean model. 
+This is likely down to the fact that the value selection for the Boolean model
+is targeting individual bits rather than entire bit-vectors, unlike the other models. 
+Each bit-vector is involved in the same number of constraints, while individual bits may be involved in more or less.
+
+\cd{ACTIVITY} value selection improved on the previous two value selection methods.
+Figure~\ref{fig:activityrnd} shows 
+the Boolean model performing the worst,
+followed by the set model,
+then the bit-vector models, with the model using bit-vector S-2 and global S-7 propagators performing the best.
+The poor performance of the Boolean model in this case is again likely due to the fact that value selection
+targets individual Boolean variables representing bits, which are either assigned or not and therefore
+cannot accumulate much activity.
+
+Finally, the best performing value selection was \cd{NONE}.
+The best performing model
+was the bit-vector model using the bit-vector S-2 and global S-7 propagators, while
+the worst performing model was the bit-vector model with the decomposed S-2 and S-7 constraints,
+as shown in Figure~\ref{fig:nonernd}.
+This value selection probably performed well for the same reasons that \cd{RND} performed poorly, 
+namely that it causes variables to become assigned more quickly and therefore increases propagation.
+
+Overall, the bit-vector model with global bit-vector propagators for both S-2 and S-7,
+in combination with the \cd{NONE} value selection performed the best for
+all values of $n$; no other model/value-selection combination reached $n=40$.
+\input{results-graphs.tex}
+
+\chapter{Conclusion}
+\label{sec:conclusion}
+
+We have presented a bit-vector variable implementation for Gecode
+and its application to the problem of 
+finding high-quality cryptographic substitution boxes. 
+
+We have described constraint programming, bit-vectors, and substitution boxes,
+and 
+reviewed previous work on bit-vectors in constraint programming
+and the application of constraint programming to substitution box generation.
+
+We have corrected errors in~\cite{sboxes},
+presented two additional symmetries for substitution boxes,
+and defined several generic bit-vector propagators and global propagators
+for the S-2 and S-7 requirements.
+
+The bit-vector variable implementation 
+was used in several models for 
+substitution box generation,
+and tested against
+models using set and Boolean variables
+for
+different variable selection methods.
+Our testing indicates that
+the best combination of model and variable selection was 
+a model based on bit-vector variables
+using global propagators for the S-2 and S-7 constraints
+in conjunction with the \cd{NONE} variable selection.
+
+\section{Future work}
+
+We implemented only a subset of the bit-vector propagators
+defined by 
+Michel and Van Hentenryck,
+and they define propagators for only a subset of logical 
+operations. 
+Future work could implement the defined propagators for Gecode
+and provide definitions for other logical operations.
+Furthermore, there are additional operations on bit-vectors which
+may be of interest; for example 
+the
+find first or find last set bit operations.
+
+We implemented only the \sc{DES}-defined S-2 constraint;
+a trivial to implement extension would be to use
+Matsui's S-2$'$ instead.
+This work is based heavily on the
+\sc{DES} design criteria, but
+there may be additional constraints which would provide
+better substitution boxes.
+
+As defined, the global propagators for requirements S-2 and S-7
+only fail a space and provide no propagation;
+it may be possible to improve these requirements
+in such a way that the propagators can actually perform propagation,
+which in turn could lead to better runtimes.
+
+Our models use the integer-based $\alldifferent$ constraint, 
+and place constraints
+on the channeled integer representations of bit-vectors to break symmetries.
+Implementing integer relation operators directly on bit-vectors and
+providing a bit-vector implementation of 
+$\alldifferent$
+would allow us to totally eliminate integer channeling,
+potentially improving runtimes.
+Alternatively, it may be possible to define an integer view for 
+bit-vectors which could use the integer-based
+$\alldifferent$ without needing a separate integer variable.
+
+Finally, although the core of Gecode is heavily optimized,
+our limited \C++ experience likely leaves room for
+the use of more advanced \C++ tricks to further improve the performance
+of our bit-vector components.
+%The conclusion should 
+%summarize the work,
+%what you did and the results,
+%as well as discuss the advantages and limitations of what you did
+%and how it can be improved "future work"
+
+\printbibliography
+\end{document}

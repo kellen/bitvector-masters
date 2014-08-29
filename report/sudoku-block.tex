@@ -1,0 +1,33 @@
+\setcounter{row}{1}
+\newcommand\setrow[9]{
+    \setcounter{col}{1}
+    \foreach \n in {#1, #2, #3, #4, #5, #6, #7, #8, #9} {
+        \edef\x{\value{col} - 0.5}
+        \edef\y{9.5 - \value{row}}
+        \node[anchor=center,scale=2.0] at (\x, \y) {\n};
+        \stepcounter{col}
+    }
+    \stepcounter{row}
+}
+\begin{tikzpicture}[thick,scale=\figscale, every node/.style={transform shape}]
+    \begin{scope}
+        \fill[sudokufill] (3,9) rectangle (6,6);
+
+        \setcounter{row}{1}
+        \setrow { }{2}{ }  {5}{ }{1}  { }{9}{ }
+        \setrow {8}{ }{ }  {2}{ }{3}  { }{ }{6}
+        \setrow { }{3}{ }  { }{6}{ }  { }{7}{ }
+
+        \setrow { }{ }{1}  { }{ }{ }  {6}{ }{ }
+        \setrow {5}{4}{ }  { }{ }{ }  { }{1}{9}
+        \setrow { }{ }{2}  { }{ }{ }  {7}{ }{ }
+
+        \setrow { }{9}{ }  { }{3}{ }  { }{8}{ }
+        \setrow {2}{ }{ }  {8}{ }{4}  { }{ }{7}
+        \setrow { }{1}{ }  {9}{ }{7}  { }{6}{ }
+
+        \draw (0, 0) grid (9, 9);
+        \draw[very thick, scale=3] (0, 0) grid (3, 3);
+    \end{scope}
+\end{tikzpicture}
+

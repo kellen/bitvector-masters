@@ -1,0 +1,44 @@
+\documentclass[a4paper,10pt,twoside,openright]{book}
+\usepackage[noend]{algpseudocode}   % pretty pseudocode, without ending fi's and od's
+\usepackage[chapter]{algorithm}     % algorithms, numbered according to chapter
+
+\title{BAR}
+\author{FOO}
+\date{\today}
+
+\begin{document}
+\pagestyle{plain}
+\maketitle
+
+\cleardoublepage
+\tableofcontents
+\pagenumbering{roman} % Roman numerals
+
+\listofalgorithms
+\listoftables
+\listoffigures
+
+\chapter{Introduction}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\begin{figure}
+A
+\caption{Figure A}
+\label{fig:A}
+\end{figure}
+\begin{table}
+A
+\caption{Table A}
+\label{tab:A}
+\end{table}
+
+\begin{algorithm}
+    \begin{algorithmic}
+	\State $n \gets 0$
+    \end{algorithmic}
+    \caption{Algorithm A}
+    \label{alg:nab}
+\end{algorithm}
+
+\end{document}

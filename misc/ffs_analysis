@@ -1,0 +1,56 @@
+GAS LISTING /tmp/cch22siZ.s 			page 1
+
+
+   1              		.file	"test.cpp"
+   2              		.text
+   3              	.Ltext0:
+   4              		.globl	main
+   6              	main:
+   7              	.LFB0:
+   8              		.file 1 "src/test.cpp"
+   1:src/test.cpp  **** #include <strings.h>
+   2:src/test.cpp  **** 
+   3:src/test.cpp  **** int main(int argc, char* argv[]) {
+   9              		.loc 1 3 0
+  10              		.cfi_startproc
+  11 0000 55       		pushl	%ebp
+  12              	.LCFI0:
+  13              		.cfi_def_cfa_offset 8
+  14              		.cfi_offset 5, -8
+  15 0001 89E5     		movl	%esp, %ebp
+  16              	.LCFI1:
+  17              		.cfi_def_cfa_register 5
+  18 0003 83EC10   		subl	$16, %esp
+  19              	.LBB2:
+   4:src/test.cpp  ****     unsigned int foo = 41;
+  20              		.loc 1 4 0
+  21 0006 C745FC29 		movl	$41, -4(%ebp)           # move 41 "long (32 bits)" to -4 on the stack (?)
+  21      000000
+   5:src/test.cpp  ****     return __builtin_ffs(foo);
+  22              		.loc 1 5 0
+  23 000d 8B45FC   		movl	-4(%ebp), %eax          # eax = 41
+  24 0010 31D2     		xorl	%edx, %edx              # edx = 0
+  25 0012 0FBCC0   		bsfl	%eax, %eax              # eax = index of first set bit, zf=1 if some bit is set
+  26 0015 0F94C2   		sete	%dl                     # edx = 1 iff zf=1
+  27 0018 F7DA     		negl	%edx                    # edx = -edx    (two's complement negation: same number wtf???)
+  28 001a 09D0     		orl	%edx, %eax                  # eax = edx | eax
+  29 001c 83C001   		addl	$1, %eax                # eax = eax + 1
+  30              	.LBE2:
+   6:src/test.cpp  **** }
+  31              		.loc 1 6 0
+  32 001f C9       		leave
+  33              	.LCFI2:
+  34              		.cfi_restore 5
+  35              		.cfi_def_cfa 4, 4
+  36 0020 C3       		ret
+  37              		.cfi_endproc
+  38              	.LFE0:
+  40              	.Letext0:
+GAS LISTING /tmp/cch22siZ.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 test.cpp
+     /tmp/cch22siZ.s:6      .text:0000000000000000 main
+
+NO UNDEFINED SYMBOLS

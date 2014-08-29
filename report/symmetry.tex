@@ -1,0 +1,287 @@
+Ramamoorthy et al.\ define several types of symmetry: 
+bit-inversion symmetry in which the value of an S-box $S(x)$ is replaced with its inverse, $\lnot S(x)$,
+rotational symmetry for a $180^{\circ}$ rotation,
+row symmetry in which certain rows are exchanged,
+column symmetry in which certain columns are exchanged,
+and
+diagonal symmetry in which blocks of values in the S-box are exchanged diagonally.
+
+We additionally identify a reflective symmetry over the $x$ axis and a reflective symmetry over the $y$ axis.
+
+\subsection{Reflection over the $x$-axis}
+
+Reflecting an S-box $S$ over the $x$-axis produces a new S-box, $S'$ in which the values in row 1 are exchanged for those in row 4 and the values in row 2 are exchanged for those in row 3, and vice-versa.
+Reflecting a $6 \times 4$ S-box $S$, for any input $x$ to $S$, the value at $S(x)$ will be moved to 
+input $x \oplus 100001$. For a $n \times m$ S-box this is 
+$x \oplus (2^{n-1} + 2^0)$.
+
+For this to be a symmetry, the constraints applied to $S$ should not be violated for $S'$, and conversely.
+The \sc{DES} criteria S-1 is already fulfilled by the choice of variables.
+
+\subsubsection{Non-linearity criteria S-2}
+
+The S-2 criteria requires that no output bit should be "too close" to a linear function of the input bits.
+This measure of linearity is captured in the count $\N$ and the score $\sigma$.
+
+Recall that the linear combination of two bit-vectors $x$ and $y$ of equal length is:
+\[\lin(x,y) = (x_0 \land y_0) \oplus (x_1 \land y_1) \oplus \ldots \oplus (x_{n-1} \land y_{n-1})\]
+If it is known that a bit $k$ is $0$ in $x$, then $\lin(x + 2^{k},y) = \lin(x) \oplus y_k$.
+
+Recall that the count of the S-box is defined as:
+\[\N = \Cardinality{\set{x\,\middle|\,0\leq x < 2^n,\,\lin(x,\alpha) = \lin(S(x),\beta)}}\] 
+
+It is possible to rewrite $\N$ as a column-based sum (assuming four rows):
+\[
+    \N = \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i),\beta) + \\
+    &1 \oplus \lin(2i + 1,\alpha) \oplus \lin(S(2i + 1),\beta) + \\
+    &1 \oplus \lin(2i + 2^{n-1},\alpha) \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &1 \oplus \lin(2i + 2^{n-1} + 1,\alpha) \oplus \lin(S(2i + 2^{n-1} + 1),\beta)
+\end{aligned}
+    \right)
+\]
+The top line of the sum corresponds to the first row of the S-box, the second line to the second row, and so on.
+Due to the range of $i$, the $0$-th and $n-1$-th bits of $2 \cdot i$ will always be zero
+and because of this, terms like 
+$\lin(2i + 2^{n-1} + 1)$ can be reduced:
+\[
+    \N = \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \alpha_0 \oplus \lin(S(2i + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \alpha_{n-1} \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \alpha_0 \oplus \alpha_{n-1} \oplus \lin(S(2i + 2^{n-1} + 1),\beta)
+\end{aligned}
+    \right)
+\]
+
+Reflecting over the $x$ axis alters the values in each column. 
+The corresponding $\Nprime$ for the reflection of the S-box over the $x$ axis involves swapping the values $S(2i)$ and $S(2i + 2^{n-1} + 1)$ and the values $S(2i+1)$ and $S(2i + 2^{n-1})$ to get the sum: 
+\[
+    \Nprime = \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1} + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \alpha_0 \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \alpha_{n-1} \oplus \lin(S(2i + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \alpha_0 \oplus \alpha_{n-1} \oplus \lin(S(2i),\beta)
+\end{aligned}
+    \right)
+\]
+
+When $a_0$ and $a_{n-1}$ are both equal to $0$ or both equal to $1$, observe that $\N = \Nprime$. For $a_0 = a_{n-1} = 1$:
+\begin{align*}
+    \N &= 
+    \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 1 \oplus \lin(S(2i + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 1 \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 1 \oplus 1 \oplus \lin(S(2i + 2^{n-1} + 1),\beta)
+\end{aligned}
+    \right) \\
+    &=
+    \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i),\beta) + \\
+    &\lin(2i,\alpha) \oplus \lin(S(2i + 1),\beta) + \\
+    &\lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1} + 1),\beta)
+\end{aligned}
+    \right) \\
+    \Nprime &= 
+    \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1} + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 1 \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 1 \oplus \lin(S(2i + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 1 \oplus 1 \oplus \lin(S(2i),\beta)
+\end{aligned}
+    \right) \\
+    &=
+    \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1} + 1),\beta) + \\
+    &\lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &\lin(2i,\alpha) \oplus \lin(S(2i + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i),\beta)
+\end{aligned}
+    \right) \\
+    &= \N
+\end{align*}
+The same equality holds if $a_0 = a_{n-1} = 0$. 
+
+When $a_0 \neq a_{n-1}$, however, $\Nprime = 2^n - \N$. For $a_0 = 0, a_{n-1} = 1$:
+\begin{align*}
+    \N &= 
+    \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 0 \oplus \lin(S(2i + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 1 \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 0 \oplus 1 \oplus \lin(S(2i + 2^{n-1} + 1),\beta)
+\end{aligned}
+    \right) \\
+    &=
+    \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i + 1),\beta) + \\
+    &\lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &\lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1} + 1),\beta)
+\end{aligned}
+    \right) \\
+    \Nprime &= 
+    \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1} + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 0 \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 1 \oplus \lin(S(2i + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus 0 \oplus 1 \oplus \lin(S(2i),\beta)
+\end{aligned}
+    \right) \\
+    &=
+    \sum_{i=0}^{2^{n-2}-1} \left(
+\begin{aligned}
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1} + 1),\beta) + \\
+    &1 \oplus \lin(2i,\alpha) \oplus \lin(S(2i + 2^{n-1}),\beta) + \\
+    &\lin(2i,\alpha) \oplus \lin(S(2i + 1),\beta) + \\
+    &\lin(2i,\alpha) \oplus \lin(S(2i),\beta)
+\end{aligned}
+    \right)
+\end{align*}
+Notice that when the term for a row is added to $\N$, its inverse is added to $\Nprime$. 
+Since these are Boolean terms and there are four rows and $2^{n-2}$ columns of terms to be summed,
+$\N + \Nprime = 2^{n-2} \cdot 2^2 = 2^n$, which then implies that
+$\Nprime = 2^n - \N$.
+The same equality holds for $\alpha_0 = 1, \alpha_{n-1} = 0$. 
+
+Recall that the score, $\sigma$, of an S-box is defined as
+\[\sigma = \max_{\alpha,\beta}\left\{\abs{\N - \frac{2^n}{2}}\right\}\]
+
+Let $A = \abs{\N - \sfrac{2^n}{2}}$. 
+The corresponding $A'$ for the reflected S-box has two cases, 
+one for $\alpha_0 = \alpha_{n-1}$
+and another for $\alpha_0 \neq \alpha_{n-1}$:
+\begin{align*}
+A' &= \begin{dcases*}
+        \abs{\Nprime - \sfrac{2^n}{2}} & if $\alpha_0 = \alpha_{n-1}$ \\
+        \abs{\Nprime - \sfrac{2^n}{2}} & if $\alpha_0 \neq \alpha_{n-1}$
+    \end{dcases*} \\
+   &= \begin{dcases*}
+        \abs{\N - \sfrac{2^n}{2}} & if $\alpha_0 = \alpha_{n-1}$ \\
+        \abs{2^n - \N - \sfrac{2^n}{2}} & if $\alpha_0 \neq \alpha_{n-1}$ 
+    \end{dcases*} \\
+   &= \begin{dcases*}
+        \abs{\N - \sfrac{2^n}{2}} & if $\alpha_0 = \alpha_{n-1}$ \\
+        \abs{\N - \sfrac{2^n}{2}} & if $\alpha_0 \neq \alpha_{n-1}$
+    \end{dcases*} \\
+   &= \abs{\N - \sfrac{2^n}{2}} \\
+   &= A
+\end{align*}
+
+So the score for the reflected S-box, $\sigma'$, is the same as $\sigma$
+\begin{align*}
+\sigma' = \max_{\alpha,\beta}\left\{A'\right\}
+        = \max_{\alpha,\beta}\left\{A\right\}
+        = \sigma
+\end{align*}
+%\begin{align*}
+%\sigma' &= \max_{\alpha,\beta}\left\{A'\right\} \\
+%        &= \max_{\alpha,\beta}\left\{A\right\} \\
+%        &= \sigma
+%\end{align*}
+
+Since the reflected S-box has the same score as the original S-box, 
+the original S-box fulfills criteria S-2
+if and only if 
+the reflected S-box
+also fulfills criteria S-2.
+
+\subsubsection{Criteria S-3}
+Criteria S-3 requires that the values of each row are distinct; the original S-box has this property if and only if reflected S-box also has this property.
+
+\subsubsection{Criteria S-4}
+
+Criteria S-4 is a constraint on pairs of variables, $x$ and $y$, 
+whose inputs differ by a single bit,
+that is that $\weight(x \oplus y) = 1$.
+In the reflected S-box, $S'$, the input
+$x$ is moved to $x \oplus (2^{n-1} + 2^0)$ and
+the input $y$ is moved to 
+$y \oplus (2^{n-1} + 2^0)$.
+Because 
+$x \oplus (2^{n-1} + 2^0) \oplus y \oplus (2^{n-1} + 2^0) = x \oplus y$,
+reflecting $S$ to $S'$ maintains this relationship between $x$ and $y$,
+so criteria S-4 is fulfilled in $S$ if and only if it is also fulfilled in $S'$.
+%Criteria S-4 is a constraint on pairs of variables whose inputs differ by a single bit. 
+%If the single differing bit is one of the middle bits, then the relationship is between two variables belonging to the same row of the S-box, whose relationship will be maintained upon reflection.
+%
+%If the single differing bit is either the first or the last bit, 
+%then the relationship is between variables in the same column of the S-box. 
+%Recall that each row is defined by the first and last bits of the input bit-vector, 
+%so reflecting the S-box is equivalent to inverting both the first and last bits of input. 
+%Due to this property, each input of the S-box will be related to the other members of the column 
+%\textit{except} for the position to which it will be reflected (since this is a change of \textit{two} bits).
+%The relationships between these S-box values will also therefore be maintained over reflection.
+
+\subsubsection{Criteria S-5}
+Criteria S-5 is a constraint on pairs of variables whose inputs differ in the "two middle bits exactly." 
+Variables which have this property belong to the same row of the S-box, and these middle bits are not 
+affected by the reflection, so this constraint is fulfilled by $S$ if and only if it is also fulfilled by $S'$.
+
+\subsubsection{Criteria S-6}
+Criteria S-6 is a constraint on pairs of variables whose inputs differ in their first two bits,
+but are the same in their last two.
+
+For a given input $x$, the inputs related to $x$ are
+variables $y$ such that 
+$(x \oplus y) \land (2^{n-1} + 2^{n-2} + 2^1 + 2^0) = (2^{n-1} + 2^{n-2})$.
+In the reflected S-box, $S'$, the input $x$ is moved to 
+$x \oplus (2^{n-1} + 2^0)$ 
+and 
+$y$ is moved to 
+$y \oplus (2^{n-1} + 2^0)$.
+And because 
+$x \oplus (2^{n-1} + 2^0) \oplus y \oplus (2^{n-1} + 2^0) = (x \oplus y)$, 
+the relationship between these inputs is maintained in $S'$.
+
+\subsubsection{Criteria S-7}
+Criteria S-7 places a constraint on sets of pairs of variables whose inputs $x$ and $y$ 
+differ for some input difference $i$: $x \oplus y = i$. 
+
+Again, because
+$x \oplus (2^{n-1} + 2^0) \oplus y \oplus (2^{n-1} + 2^0) = (x \oplus y)$,
+this relationship is unchanged for the reflected S-box $S'$,
+so criteria S-7 is fulfilled in $S$ if and only if it is also fulfilled in $S'$.
+
+\subsection{Reflection over the $y$-axis}
+
+We have shown that reflection over the $x$ axis is a symmetry, while
+Ramamoorthy et al.\ shown a $180^{\circ}$ degree rotational symmetry.
+A reflection over the $y$-axis is equivalent to a reflection over the $x$ axis 
+followed by a $180^{\circ}$ rotation.
+
+If an S-box $S$ fulfills criteria S-1--S-7, 
+then so does an S-box $S'$ which is reflected over the $x$-axis,
+and so does an S-box $S''$ which is $S'$ rotated by $180^{\circ}$, 
+which in turn is equivalent to an S-box reflected over the $y$-axis.
+
+\subsection{Symmetry-breaking}
+\label{sec:breakreflection}
+
+During search, reflective symmetry over the $x$-axis 
+can be broken by constraining the variable 
+at the top-left of the S\=/box to be less than or equal to the 
+variable at the bottom-left of the S\=/box.
+For a \sixbyfour{} S\=/box, these are the variables for
+input $0$ and $33$:
+$I(S(0)) \leq I(S(33))$
+
+The reflective symmetry over the $y$-axis can be broken during search
+by constraining the variable at the top-left of the
+S\=/box to be less than or equal to
+the variable at the top-right of the S\=/box.
+For a \sixbyfour{} S\=/box, these are the variables for
+input $0$ and $30$:
+$I(S(0)) \leq I(S(30))$

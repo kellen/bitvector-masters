@@ -1,0 +1,21 @@
+\Function{propagate}{$x \oplus y = z$}
+    \Let{$\mathit{low}^x$}{$l^x \lor (\lnot u^z \land l^y) \lor (l^z \land \lnot u^y)$}
+    \Let{$\mathit{up}^x$}{$u^x \land (u^z \lor u^y) \land \lnot(l^y \land l^z)$}
+    \Let{$\bd$}{$\bitd$}
+    \If{$\lnot \valid(\bd)$}
+        \Return \textbf{false}
+    \EndIf
+    \Let{$\mathit{low}^y$}{$l^y \lor (\lnot u^z \land l^x) \lor (l^z \land \lnot u^x)$}
+    \Let{$\mathit{up}^y$}{$u^y \land (u^z \lor u^x) \land \lnot(l^x \land l^z)$}
+    \Let{$\bd{y}$}{$\bitd{y}$}
+    \If{$\lnot \valid(\bd{y})$}
+        \Return \textbf{false}
+    \EndIf
+    \Let{$\mathit{low}^z$}{$l^z \lor (\lnot u^x \land l^y) \lor (l^x \land \lnot u^y)$}
+    \Let{$\mathit{up}^z$}{$u^z \land (u^x \lor u^y) \land \lnot(l^x \land l^y )$}
+    \Let{$\bd{z}$}{$\bitd{z}$}
+    \If{$\lnot \valid(\bd{z})$}
+        \Return \textbf{false}
+    \EndIf
+    \Return \textbf{true}
+\EndFunction

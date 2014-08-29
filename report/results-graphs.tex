@@ -1,0 +1,153 @@
+\pgfplotscreateplotcyclelist{kellencolors}{%
+	teal,every mark/.append style={solid,fill=teal!60!black},mark=*\\%
+	orange,every mark/.append style={solid,fill=orange!80!black},mark=square*\\%
+	yellow!60!black,every mark/.append style={solid,fill=yellow!80!black},mark=triangle*\\%
+	red!70!white,every mark/.append style={solid,fill=red!80!black},mark=diamond*\\%
+	lime!80!black,every mark/.append style={solid,fill=yellow!80!black},mark=pentagon*\\%
+    purple!60!black,every mark/.append style={solid,fill=red!80!black},mark=x\\%
+}
+
+\begin{figure*}[h]
+%\noindent
+\begin{adjustwidth}{-2.5cm}{-3cm}
+\parbox[c]{\paperwidth}{
+    \begin{minipage}{.85\paperwidth}
+        \centering
+        %\subfloat[]{
+            \begin{tikzpicture}[font=\sffamily]
+                \begin{axis}[xlabel={\# unassigned variables}, 
+                             %xtick=data,
+                             xtick={8,12,16,20},
+                             ylabel={time (s)}, 
+                             %title={RND}, 
+                             width=0.6\textwidth, 
+                             cycle list name=kellencolors,
+                             legend style={legend pos=north west},
+                             legend cell align=left]
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \setinthcrnd ;
+                    \addlegendentry{set, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \boolinthcrnd ;
+                    \addlegendentry{boolean, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bitinthcrnd ;
+                    \addlegendentry{bit-vector, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bitdecomphcrnd ;
+                    \addlegendentry{bit-vector, decomposed S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bithcrnd ;
+                    \addlegendentry{bit-vector, S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bithcssevenrnd ;
+                    \addlegendentry{bit-vector, S-2, S-7};
+                \end{axis}
+            \end{tikzpicture}
+            \captionof{figure}{RND}
+            \label{fig:rndrnd}
+        %}
+    \end{minipage}%
+    \\
+    \vspace{20pt}
+    \\
+    \begin{minipage}{.85\paperwidth}
+        \centering
+        %\subfloat[]{
+            \begin{tikzpicture}[font=\sffamily]
+                \begin{axis}[xlabel={\# unassigned variables}, 
+                             %xtick=data,
+                             xtick={8,12,16,20,24,28,32},
+                             ylabel={time (s)}, 
+                             %title={DEGREE}, 
+                             width=0.6\textwidth, 
+                             cycle list name=kellencolors,
+                             legend style={legend pos=north west},
+                             legend cell align=left]
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \setinthcdegree ;
+                    \addlegendentry{set, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \boolinthcdegree ;
+                    \addlegendentry{boolean, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bitinthcdegree ;
+                    \addlegendentry{bit-vector, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bitdecomphcdegree ;
+                    \addlegendentry{bit-vector, decomposed S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bithcdegree ;
+                    \addlegendentry{bit-vector, S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bithcssevendegree ;
+                    \addlegendentry{bit-vector, S-2, S-7};
+                \end{axis}
+            \end{tikzpicture}
+            \captionof{figure}{DEGREE}
+            \label{fig:degreernd}
+        %}
+    \end{minipage}%
+}
+\end{adjustwidth}
+\end{figure*}
+\newpage
+\begin{figure*}[h]
+%\noindent
+\begin{adjustwidth}{-2.5cm}{-3cm}
+\parbox[c]{\paperwidth}{
+    \begin{minipage}{.85\paperwidth}
+        \centering
+        %\subfloat[]{
+            \begin{tikzpicture}[font=\sffamily]
+                \begin{axis}[xlabel={\# unassigned variables}, 
+                             xtick={8,12,16,20,24,28,32},
+                             ylabel={time (s)}, 
+                             %title={ACTIVITY}, 
+                             width=0.6\textwidth, 
+                             cycle list name=kellencolors,
+                             legend style={legend pos=north west},
+                             legend cell align=left]
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \setinthcactivity ;
+                    \addlegendentry{set, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \boolinthcactivity ;
+                    \addlegendentry{boolean, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bitinthcactivity ;
+                    \addlegendentry{bit-vector, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bitdecomphcactivity ;
+                    \addlegendentry{bit-vector, decomposed S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bithcactivity ;
+                    \addlegendentry{bit-vector, S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bithcssevenactivity ;
+                    \addlegendentry{bit-vector, S-2, S-7};
+                \end{axis}
+            \end{tikzpicture}
+            \captionof{figure}{ACTIVITY}
+            \label{fig:activityrnd}
+        %}
+    \end{minipage}%
+    \\
+    \vspace{20pt}
+    \\
+    \begin{minipage}{.85\paperwidth}
+        \centering
+        %\subfloat[]{
+            \begin{tikzpicture}[font=\sffamily]
+                \begin{axis}[xlabel={\# unassigned variables}, 
+                             %xtick=data,
+                             xtick={8,12,16,20,24,28,32,36,40},
+                             ylabel={time (s)}, 
+                             %title={NONE}, 
+                             width=0.6\textwidth, 
+                             cycle list name=kellencolors,
+                             legend style={legend pos=north west},
+                             legend cell align=left]
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \setinthcnone ;
+                    \addlegendentry{set, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \boolinthcnone ;
+                    \addlegendentry{boolean, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bitinthcnone ;
+                    \addlegendentry{bit-vector, integer S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bitdecomphcnone ;
+                    \addlegendentry{bit-vector, decomposed S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bithcnone ;
+                    \addlegendentry{bit-vector, S-2};
+                    \addplot +[unbounded coords=jump,line width=1.5pt] table[y=averagetime] from \bithcssevennone ;
+                    \addlegendentry{bit-vector, S-2, S-7};
+                \end{axis}
+            \end{tikzpicture}
+            \captionof{figure}{NONE}
+            \label{fig:nonernd}
+        %}
+    \end{minipage}%
+}
+\end{adjustwidth}
+\end{figure*}

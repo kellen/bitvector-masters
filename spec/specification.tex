@@ -1,0 +1,130 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[british]{babel}
+\usepackage{color}
+\usepackage{fullpage}
+\usepackage{hyperref} % should always be the last package
+
+\newcommand{\todo}[1]{{\color{red}(To do: #1)}} % comment away to OMIT to-do items
+%\newcommand{\todo}[1]{}                        % comment away to SHOW to-do items
+
+\newcommand{\AllDifferent}{\Constraint{AllDifferent}}
+\newcommand{\Constraint}[1]{\textsc{#1}}
+\newcommand{\Comet}{\textit{Comet}}
+\newcommand{\Gecode}{\textit{Gecode}}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+
+\title{Implementing Bit-Vector Variables,\\ with an Application to the
+  Generation of S-Boxes}
+
+\author{Specification of a Master Thesis in Computer Science \\
+  at the Department of Information Technology at Uppsala University \\
+  by
+  \href{mailto:Kellen.Dye.0894@student.uu.se}{Kellen Dye}
+  (19810421-1217)
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\noindent
+This master thesis project (D-level, 20 weeks, 30 credits) will be
+done at the ASTRA research group
+(\url{http://www.it.uu.se/research/group/astra}) at Uppsala
+University.  It will be supervised by Dr Jean-No\"el Monette and reviewed
+by Prof.\ Pierre Flener.
+
+\section*{Background: Constraint Programming}
+
+\textbf{Constraint programming} (CP) \cite{constraintshandbook} is a
+set of techniques to find values for some given decision variables
+within their given domains, so that some given constraints on these
+variables are satisfied and possibly that some cost (or benefit)
+expression on these variables is minimised (or maximised).
+
+The core concept of CP is the notion of \textbf{constraint}, which is
+a declarative encapsulation of specialised algorithms, discussed
+below.  Beside simple comparison ($<$, $\leq$, $=$, $\neq$, $\geq$,
+$>$) and arithmetic (linear equation, disequation, and inequation)
+constraints, a large number of combinatorial constraints have been
+identified and equipped with algorithms. Those constraints capture
+recurring problem substructures, such as
+$\AllDifferent(\Set{x_1,\dots,x_n})$, which means that the $x_i$
+decision variables take pairwise distinct values.
+
+CP solves such combinatorial problems by \textbf{systematic search}
+with backtracking, and performs at every node of the search tree a
+particular kind of inference called \textbf{propagation}.  For each
+constraint, a \textbf{propagation algorithm} narrows the domains of
+its decision variables by eliminating impossible values according to
+some desired level of \textbf{consistency}.  Propagation at a node of
+the search tree then amounts to computing the greatest simultaneous
+fixpoint of the propagators for all the constraints.
+
+Classically, decision variables take their values in a subset of the
+integers. However other domains have been proposed, e.g., floating
+point numbers, sets, and graphs. Recent work has been performed on the
+domain of \textbf{bit-vector} variables in CP. Such variables take
+their values in a subset of all possible vectors of bits (of a given
+length). Such a domain has applications in many areas of computer
+science, e.g., in cryptography or program verification.
+
+\section*{Task Description}
+
+The goal of this thesis is to provide an implementation of the
+bit-vector domain in CP and to apply it on relevant problems.
+
+More precisely, the work can be roughly divided into the following
+goals:
+
+\begin{itemize}
+\item Implement the bit-vector variables as described in~\cite{bitvectors}. 
+\item Design and implement propagation algorithms, for both primitive
+  and global constraints applied on bit-vectors.
+\item Use the bit-vector variables and constraints to design
+  cryptographic S-boxes following the approach outlined in~\cite{sboxes}.
+\end{itemize}
+
+\section*{Procedure}
+
+\begin{itemize}
+\item Meetings will be held by appointment or on request by the
+  student, supervisor, or reviewer. 
+\item All implementation will be done in \Gecode, a free software
+  (available at \url{http://www.gecode.org/}), under the terms of the
+  MIT license.
+\item The thesis will be written in English using \LaTeX.
+\item A paper will be written with the supervisor and reviewer if the
+  results warrant it.  It will be submitted to some relevant CP event.
+\item All documents and software produced during this work will be
+  archived at ASTRA.
+\end{itemize}
+
+
+\section*{Time Plan}
+
+The equivalent of 20 full-time weeks will be spent on
+this work, beginning in week 4 of 2014.
+We aim at completion by late June 2014, upon a public presentation of
+the results and revision of the thesis according to the comments by
+the audience and the reviewer.  The time will be spent according to
+the following time plan:
+\begin{enumerate}
+\item Background study on \Gecode{} and bit-vector solvers (2~weeks).
+\item Implementation of the bit-vector variables and primitive
+  constraints (3~weeks).
+\item Experimental comparison of the implementation with existing
+  approaches (3~weeks)
+\item Design and implementation of a CP model for the generation of
+  S-boxes (3~weeks).
+\item Design and implementation of global constraints that improve the CP model for S-boxes (3~weeks).
+\item Experimental evaluation of the CP model for S-boxes (2~weeks).
+\item Writing of the thesis (4~weeks).
+\end{enumerate}
+
+\bibliographystyle{abbrv}
+\bibliography{specification}
+
+\end{document}

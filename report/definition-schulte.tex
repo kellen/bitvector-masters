@@ -1,0 +1,167 @@
+%Presented here is a definition of constraint programming as described by Schulte in~\cite{lecturenotes}.
+
+In the following definition of constraint programming we follow
+the terminology and format of the presentation of 
+constraint programming given by Schulte in~\cite{lecturenotes}.
+
+% 2.1
+A constraint satisfaction problem (CSP) is a triple $\tuple{V,U,C}$ where $V$ is a finite set of variables, $U$ is a finite set of values, and $C$ is a finite set of constraints. Each constraint $c \in C$ is a pair $\tuple{v,s}$ where $v$ are the variables of $c$, $v \in V^n$, and $s$ are the solutions of $c$, $s \subseteq U^n$ for the arity $n$, $n \in \mathbb{N}$.
+
+For notational convenience, the variables of $c$ can be written $\var(c)$
+and
+the solutions of $c$ can be written $\sol(c)$.
+% and the arity of $c$ can be written as $\arity(c)$.
+
+% 2.2
+An assignment $a$ is a function from the set of variables $V$ to a universe $U$: $a \in V \rightarrow U$. 
+For the set of variables $V = \set{x_1,\ldots,x_k}$, a particular variable $x_i$ is assigned to the value $n_i$, that is: $a(x_i) = n_i$. 
+%$a$ can also be written $\set{x_1 \mapsto n_1,\ldots,x_k\mapsto n_k}$
+
+% 2.3
+A particular assignment $a$ is a solution of constraint $c$, written $a \in c$, if for $\var(c) = \tuple{x_1,\ldots,x_n}$, $\tuple{a(x_1),\ldots,a(x_n)} \in \sol(c)$
+
+% 2.4
+The set of solutions to a constraint satisfaction problem $\mathscr{C} = \tuple{V,U,C}$ is 
+\[\sol(\mathscr{C}) = \set{a \in V \rightarrow U \suchthat \forall c \in C : a \in c }\]
+
+\subsubsection{Propagation}
+In constraint solvers, constraints are implemented with \textit{propagators}.
+Propagators perform inference on sets of possible variable values, called constraint stores, $s$, with $s \in V \rightarrow 2^U$, where $2^U$ is the power set of $U$.
+\begin{algorithm}
+    \caption{Propagation algorithm}
+    \label{alg:prop}
+    \begin{algorithmic}
+        \Function{propagate}{$\tuple{V,U,P},s$}
+            \Let{$Q$}{$P$}
+            \While{$Q \neq \emptyset$}
+                \Let{$p$}{$\select(Q)$}
+                \Let{$\tuple{m,s'}$}{$p(s)$}
+                \Let{$Q$}{$Q - \set{p}$}
+                \If{$m = \mathit{subsumed}$}
+                    \Let{$P$}{$P - \set{p}$}
+                \EndIf
+                \Let{$\mathit{MV}$}{$\set{x \in V \suchthat s(x) \neq s'(x)}$}
+                \Let{$\mathit{DP}$}{$\set{p \in P \suchthat \var(p) \cap \mathit{MV} \neq \emptyset }$}
+                \If{$m = \mathit{fix}$}
+                    \Let{$\mathit{DP}$}{$\mathit{DP} - \set{p}$}
+                \EndIf
+                \Let{$Q$}{$Q \cup \mathit{DP}$}
+                \Let{$s$}{$s'$}
+            \EndWhile
+            \Return{$\tuple{P,s}$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+The set of all constraint stores $S$ is $S = V \rightarrow 2^U$.
+
+If, for two stores $s_1$ and $s_2$, $\forall x \in V : s_1(x) \subseteq s_2(x)$, then $s_1$ is \textit{stronger} than $s_2$, written $s_1 \leq s_2$. $s_1$ is \textit{strictly stronger} than $s_2$, written $s_1 < s_2$, if $\exists x \in V : s_1(x) \subset s_2(x)$
+
+If $\forall x \in V : a(x) \in s(x)$ for an assignment $a$ and a store $s$, then $a$ is \textit{contained in the store}, written $a \in s$. 
+%If $\forall x \in V : \Cardinality{s(x)} = 1$, then $s$ is an \textit{assignment store}.
+% TODO 2.7, the third part, "by construction store(a) is an assignment store"
+The store $\store(a) \in V \rightarrow 2^U$ is defined as: $\forall x \in X : \store(a)(x) = \set{a(x)}$
+
+% 2.8
+A propagator $p$ is a function from constraint stores to constraint stores: $p \in S \rightarrow S$. A propagator must be \textit{contracting}, $\forall s \in S : p(s) \leq s$ and \textit{monotonic}, $\forall s_1, s_2 \in S : s_1 \leq s_2 \implies p(s_1) \leq p(s_2)$.
+% TODO do we need 2.9 implementation
+
+% 2.10
+A store $s$ is \textit{failed} if $\exists x \in V : s(x) = \emptyset$. A propagator $p$ fails on a store $s$ if $p(s)$ is failed. 
+
+% 2.11
+A constraint model is $\mathscr{M} = \tuple{V,U,P}$, where $V$ and $U$ are the same as defined previously and $P$ is a finite set of propagators over $V$ and $U$. 
+
+% 2.12
+The set of solutions of a propagator $p$ is \[\sol(p) = \set{a \suchthat a \in V \rightarrow U, p(\store(a)) = \store(a)}\]
+
+% 2.13
+The set of solutions for a particular model $\mathscr{M}$ is $\sol(\mathscr{M}) = \cap\limits_{p \in P}\sol(p)$
+% TODO do we need 2.14 implementation??
+% TODO Do we need 2.15 - solutions of constraint model FOR a store????
+
+% 2.16 - SORTA... the actual definition is more precise, annoying
+For a propagator $p \in S \rightarrow S$, the variables involved in the particular constraint implemented by $p$ are given by $\var(p)$.
+
+The \textit{fixpoint} of a function $f$, $f \in X \rightarrow X$, is an input $x$, $x \in X$ such that $f(x) = x$. 
+A propagator $p$ is at fixpoint for a store $s$ if $p(s) = s$.
+% 2.17
+A propagator $p$ is \textit{subsumed} by a store $s$ if $\forall s' \leq s : p(s') = s'$, that is if all stronger stores are fixpoints of $p$.
+% TODO 2.18 idempotence; needed?
+
+In order to implement propagation in a solver, it is useful for the propagators to be able to report about the status of the returned store. 
+We therefore define an \textit{extended propagator}, $ep$, 
+as a function from constraint stores to a pair containing a status message and a constraint store: 
+$ep \in S \rightarrow \mathit{SM} \times S$ 
+where the status message 
+$\mathit{SM} = \set{\mathit{nofix},\mathit{fix},\mathit{subsumed}}$.
+
+The application of an extended propagator $ep$ to a constraint store $s$
+results in a tuple 
+$\tuple{m,s'}$, where the status message $m$ indicates 
+whether $s'$ is a fixpoint ($m = \mathit{fix}$), 
+whether $s'$ subsumes $ep$ ($m = \mathit{subsumed}$), 
+or if no information is available ($m = \mathit{nofix}$).
+
+A propagation algorithm using extended propagators is given in Algorithm~\ref{alg:prop}.
+Initially, the solver will schedule all propagators $P$ in the queue $Q$. The propagation algorithm executes the following inner loop until the queue is empty.
+
+One propagator, $p$, is selected by a function $\select$, which is usually specified dependent upon the problem to be solved. The propagator $p$ is executed, then its returned status, $m$, is examined. If $p$ is subsumed by the returned store $s'$, then $p$ is removed from $P$, since further executions will never reduce variable domains.
+
+Next, the set of \textit{modified variables}, $\mathit{MV}$, is calculated. From this set, the set of propagators which are dependent upon these variables, $\mathit{DP}$, is calculated. If $s'$ is a fixpoint of $p$, then $p$ is removed from the list of dependent propagators. 
+
+Finally, the dependent propagators are added to the queue if they were not already present, and the current store $s$ is updated to be the store $s'$, the result of executing $p$. In this step, changes to variable domains (indicated by $\mathit{MV}$) cause propagators to be scheduled for execution (added to $Q$), thus \textit{propagating} these changes to other variable domains.
+
+Once the queue $Q$ is empty, propagation is complete and the set of non-subsumed propagators $P$ and the updated store $s$ are returned.
+
+\subsubsection{Search}
+A branching for $\mathscr{M}$ is a function $b$ which takes a set of propagators $Q$ and a store $s$ and returns an $n$-tuple $\tuple{Q_1,\ldots,Q_n}$ of sets of propagators $Q_i$. 
+
+% 3.2 
+A search tree for a model $\mathscr{M}$ and a branching $b$ is a tree where the nodes are labelled with pairs $\tuple{Q,s}$ where $Q$ is a set of propagators and $s$ is a store obtained by constraint propagation with respect to $Q$.
+
+The root of the tree is $\tuple{P,s}$, where $s = \propagate(P,s_{\mathit{init}})$ and $s_{\mathit{init}} = \lambda x \in V . U$.
+% TODO def s_init?
+Each leaf of the tree, $\tuple{Q,s}$, either has a store $s$ which is failed or at which $b(Q,s)=\tuple{}$ in which case the leaf is \textit{solved}.
+For each inner node of the tree, $s$ is not failed and $b(Q,s) = \tuple{Q_1,\ldots,Q_n}$ where $n \geq 1$. 
+Each inner node has $n$ children where each child is labelled $\tuple{Q \cup Q_i, \propagate(Q \cup Q_i,s)}$ for $1 \leq i \leq n$.
+
+To actually construct a search tree (that is, to search the solution space) some exploration strategy must be chosen. As an example, a depth-first exploration procedure is given in Algorithm~\ref{alg:dfs}.
+
+\begin{algorithm}[ht]
+    \caption{Depth-first exploration}
+    \label{alg:dfs}
+    \begin{algorithmic}
+        \Function{dfe}{$P,s$}
+            \Let{$s'$}{$\propagate(P,s)$}
+            \If{$s'$ is failed}
+                \Return{$s'$}
+            \Else
+                \Case{$b(P,s')$}
+                \Of{$\tuple{}$}
+                    \Return{$s'$}
+                \Of{$\tuple{P_1,P_2}$}
+                    \Let{$s''$}{$\dfe(P \cup P_1,s')$}
+                    \If{$s''$ is failed}
+                        \Return{$\dfe(P \cup P_2,s')$}
+                    \Else
+                        \Return{$s''$}
+                    \EndIf
+                \EndCase
+            \EndIf
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+%\begin{algorithm}
+%    \caption{Naive branching}
+%    \label{alg:branch}
+%    \begin{algorithmic}
+%        \Function{b}{$P, s$}
+%        \For{$x \in V$}
+%            \If{$\Cardinality{s(x)} > 1$}
+%            \Return{$\tuple{\assign(x,n) \suchthat n \in s(x)}$}
+%            \EndIf
+%        \EndFor
+%        \Return{$\tuple{}$}
+%        \EndFunction
+%    \end{algorithmic}
+%\end{algorithm}
