@@ -3,6 +3,8 @@ bit-vector variables for Gecode
 
 Master's thesis + implementation.
 
+Thesis: [abstract](http://uu.diva-portal.org/smash/record.jsf?pid=diva2%3A761927&dswid=-420), [fulltext (PDF)](http://uu.diva-portal.org/smash/get/diva2:761927/FULLTEXT01.pdf)
+
 Build
 -----
 
